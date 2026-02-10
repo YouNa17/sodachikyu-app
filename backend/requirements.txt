@@ -1,0 +1,4 @@
+# FastAPI を Docker でインストールできるようにする
+
+fastapi
+uvicorn[standard]
