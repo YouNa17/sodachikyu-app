@@ -9,7 +9,7 @@ import os
 # FIXME：無ければデフォルト値を使う
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "postgresql+psycopg2://postgres:postgres@db:5432/postgres"
+    "postgresql+psycopg2://postgres:postgres@db:5432/sodachikyu"
 )
 
 # DBとの接続装置(engine)を使って実際にDB操作するセッションを作る
