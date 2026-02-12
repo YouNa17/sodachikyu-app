@@ -1,16 +1,9 @@
+"use client"; // [修正] useStateを使うために必須です
+
 import Link from "next/link";
-import { addClear } from "@/lib/progress";
+import { useState } from "react"; // [追加] setMsgを使うために必要です
 
-
-function onDo(title: string) {
-  const cleared = addClear(); // ←これが増やして保存
-  setMsg(`✅ 「${title}」クリア！ きょうの行動：${cleared} 回`);
-  setTimeout(() => setMsg(""), 2500);
-}
-
-
-const cleared = addClear();
-
+// カテゴリデータ
 const CATEGORIES = [
   { id: "waste", title: "ごみ・リサイクル", emoji: "🗑️", desc: "分別・減らす・リユース" },
   { id: "food", title: "食べもの", emoji: "🥕", desc: "残さず・地産地消" },
@@ -20,20 +13,33 @@ const CATEGORIES = [
 ];
 
 export default function CategoriesPage() {
+  // [修正] メッセージを表示するための状態（State）
+  const [msg, setMsg] = useState("");
+
+  // ※ もし「ボタンを押して即クリア」という機能が必要なら使いますが、
+  // この画面は「詳細（アクション一覧）へ飛ぶ」のが目的なので、LinkがあればOKです。
+
   return (
     <main style={{ minHeight: "100vh", padding: 20, background: "#F6FBFF" }}>
       <header style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
         <h1 style={{ margin: 0, fontSize: 20 }}>カテゴリ一覧</h1>
-        <Link href="/home" style={{ fontSize: 13 }}>
+        <Link href="/home" style={{ fontSize: 13, color: "#0070f3" }}>
           ← ホーム
         </Link>
       </header>
+
+      {/* メッセージ表示エリア */}
+      {msg && (
+        <div style={{ background: "#e8f5e9", padding: "10px", borderRadius: "8px", marginTop: "10px", fontSize: "14px" }}>
+          {msg}
+        </div>
+      )}
 
       <div style={{ display: "grid", gap: 10, marginTop: 14 }}>
         {CATEGORIES.map((c) => (
           <Link
             key={c.id}
-            href={`/categories/${c.id}`}
+            href={`/categories/${c.id}`} // 例: /categories/waste へ遷移
             style={{
               textDecoration: "none",
               color: "inherit",
@@ -44,6 +50,7 @@ export default function CategoriesPage() {
               display: "flex",
               gap: 12,
               alignItems: "center",
+              transition: "transform 0.1s",
             }}
           >
             <div style={{ width: 34, fontSize: 22 }}>{c.emoji}</div>
@@ -55,6 +62,12 @@ export default function CategoriesPage() {
           </Link>
         ))}
       </div>
+
+      {/* [追加] ワイヤーフレームにあった下部のキャラ表示用スペース */}
+      <footer style={{ marginTop: "40px", textAlign: "center", opacity: 0.5 }}>
+        <div style={{ fontSize: "40px" }}>🌍</div>
+        <p style={{ fontSize: "12px" }}>（ここに地球キャラが表示されます）</p>
+      </footer>
     </main>
   );
 }
