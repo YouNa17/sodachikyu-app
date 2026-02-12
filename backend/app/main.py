@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from app.db.session import engine
 from sqlalchemy import text
+from app.api.routers import users
 
 app = FastAPI()
 
@@ -14,3 +15,5 @@ def test_connection():
     with engine.connect() as conn:
         conn.execute(text("SELECT 1"))
     print("DB connected!")
+
+app.include_router(users.router)
