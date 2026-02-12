@@ -4,3 +4,15 @@
 # Python
 __pycache__/
 *.pyc
+*.pyo
+
+# env
+.env
+.env.*
+
+# logs
+*.log
+
+node_modules/
+.next/
+next-env.d.ts

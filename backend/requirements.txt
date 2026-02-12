@@ -1,4 +1,7 @@
-# FastAPI を Docker でインストールできるようにする
+# このプロジェクトで必要なPythonライブラリ一覧表
 
 fastapi
 uvicorn[standard]
+sqlalchemy
+psycopg2-binary
+alembic
