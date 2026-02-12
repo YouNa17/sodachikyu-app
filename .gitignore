@@ -13,8 +13,13 @@ __pycache__/
 # logs
 *.log
 
+# Node / Next
 node_modules/
 .next/
 next-env.d.ts
 
+# Python venv
 venv/
+
+# backup
+_backup/
