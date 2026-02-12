@@ -12,3 +12,7 @@ __pycache__/
 
 # logs
 *.log
+
+node_modules/
+.next/
+next-env.d.ts
