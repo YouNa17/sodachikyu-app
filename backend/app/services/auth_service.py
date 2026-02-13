@@ -3,6 +3,7 @@
 # -----------------
 from app.models.user import User
 
+
 def get_or_create_user(db, decoded_token: dict):
     firebase_uid = decoded_token["uid"]
 

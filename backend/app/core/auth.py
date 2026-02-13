@@ -9,6 +9,7 @@ from app.core.firebase import init_firebase
 # Bearerトークン必須化
 bearer = HTTPBearer()
 
+
 #  Depends(bearer) がヘッダーを読む
 #  Authorizationが無いと自動で 403 になる
 #  あれば creds.credentials にトークンが入る

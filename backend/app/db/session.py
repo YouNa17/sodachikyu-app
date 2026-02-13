@@ -13,11 +13,8 @@ if not DATABASE_URL:
 
 # DBとの接続装置(engine)を使って実際にDB操作するセッションを作る
 engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(
-    autocommit=False,
-    autoflush=False,
-    bind=engine
-)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
 
 # -----------------
 # FastAPI dependency用
