@@ -1,53 +1,44 @@
 "use client";
 
-import Link from "next/link";
-import EarthCharacter from "@/components/EarthCharacter"; // さきほどのコンポーネントを読み込む
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 
 export default function HomePage() {
-  // 本来はここでDBから取得しますが、今はテスト用に「3」を入れています
-  const todayActionCount = 3;
+  const router = useRouter();
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const savedCount = localStorage.getItem("actionCount");
+    setCount(savedCount ? parseInt(savedCount) : 0);
+  }, []);
+
+  // ✅ 指摘通り定義を整理。実際のファイル名に合わせて .png.jpg に修正
+  const earthImage = count >= 5 ? "/earth-happy.png.jpg" : "/earth-normal.png.jpg";
 
   return (
-    <main style={{ minHeight: "100vh", padding: "24px", background: "#F0F9FF" }}>
-      {/* ヘッダーエリア */}
-      <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "30px" }}>
-        <h2 style={{ fontSize: "18px", margin: 0 }}>マイページ</h2>
-        <Link href="/login" style={{ fontSize: "13px", color: "#666" }}>ログアウト</Link>
-      </header>
-
-      {/* 地球キャラコンポーネントを表示！ */}
-      <section style={{ marginBottom: "30px" }}>
-        <EarthCharacter clearedCount={todayActionCount} />
-      </section>
-
-      {/* アクション開始ボタン（ワイヤーフレームに基づいた配置） */}
-      <div style={{ textAlign: "center", marginTop: "40px" }}>
-        <button
-          onClick={() => window.location.href = '/categories'}
-          style={{
-            width: "100%",
-            maxWidth: "300px",
-            padding: "18px",
-            backgroundColor: "#4CAF50",
-            color: "white",
-            border: "none",
-            borderRadius: "35px",
-            fontSize: "18px",
-            fontWeight: "bold",
-            cursor: "pointer",
-            boxShadow: "0 4px 15px rgba(76, 175, 80, 0.3)"
-          }}
-        >
-          アクションをはじめる
-        </button>
+    <main style={{ padding: "40px 20px", textAlign: "center", backgroundColor: "#e0f7fa", minHeight: "100vh" }}>
+      <h1 style={{ color: "#00796b", fontSize: "28px" }}>わたしの地球</h1>
+      <p style={{ marginBottom: "30px" }}>これまでのアクション: {count}回</p>
+      
+      <div className="floating-earth" style={{ margin: "40px 0" }}>
+        <img src={earthImage} alt="地球" style={{ width: "200px", height: "auto" }} />
       </div>
 
-      {/* 今日のステータス（おまけ） */}
-      <div style={{ marginTop: "40px", padding: "20px", background: "white", borderRadius: "16px", border: "1px solid #eaeaea" }}>
-        <p style={{ margin: 0, fontSize: "14px", color: "#666" }}>
-          現在のランク：<strong>エコ見習い</strong>
-        </p>
-      </div>
+      <button 
+        onClick={() => router.push("/categories")} 
+        style={{ padding: "16px 40px", backgroundColor: "#4CAF50", color: "white", borderRadius: "30px", border: "none", fontWeight: "bold", fontSize: "18px", cursor: "pointer" }}
+      >
+        アクションをはじめる
+      </button>
+
+      <style jsx>{`
+        .floating-earth { animation: float 3s ease-in-out infinite; }
+        @keyframes float {
+          0% { transform: translateY(0px); }
+          50% { transform: translateY(-15px); }
+          100% { transform: translateY(0px); }
+        }
+      `}</style>
     </main>
   );
 }

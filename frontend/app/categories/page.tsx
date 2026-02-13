@@ -63,10 +63,16 @@ export default function CategoriesPage() {
         ))}
       </div>
 
-      {/* [追加] ワイヤーフレームにあった下部のキャラ表示用スペース */}
-      <footer style={{ marginTop: "40px", textAlign: "center", opacity: 0.5 }}>
-        <div style={{ fontSize: "40px" }}>🌍</div>
-        <p style={{ fontSize: "12px" }}>（ここに地球キャラが表示されます）</p>
+     {/* 🌍 修正：ここに地球キャラを実物の画像で表示します */}
+      <footer style={{ marginTop: "40px", textAlign: "center" }}>
+        <img 
+          src="/normal.jpg" 
+          alt="地球キャラ" 
+          style={{ width: "120px", height: "auto", marginBottom: "10px" }} 
+        />
+        <p style={{ fontSize: "14px", color: "#00796b", fontWeight: "bold", opacity: 0.8 }}>
+          どのアクションからはじめる？
+        </p>
       </footer>
     </main>
   );
