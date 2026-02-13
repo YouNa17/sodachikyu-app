@@ -13,29 +13,18 @@ class User(Base):
 
     # UUID 主キー
     id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True),
-        primary_key=True,
-        default=uuid.uuid4
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
 
     # Firebase UID
-    firebase_uid: Mapped[str] = mapped_column(
-        String,
-        unique=True,
-        nullable=False
-    )
+    firebase_uid: Mapped[str] = mapped_column(String, unique=True, nullable=False)
 
     # 登録日時
     created_at: Mapped[datetime] = mapped_column(
-        DateTime,
-        default=datetime.utcnow,
-        nullable=False
+        DateTime, default=datetime.utcnow, nullable=False
     )
 
     # 更新日時
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime,
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow,
-        nullable=False
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
     )
