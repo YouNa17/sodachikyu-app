@@ -1,1 +1,80 @@
-console.log()
+name: PR Quality Check
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  frontend:
+    name: Frontend (ESLint + Prettier)
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./frontend
+
+    steps:
+      # ① CI用のUbuntuマシンにリポジトリをclone
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ② Node.js をセットアップ（npmが使える状態にする）
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+
+      # ③ 依存関係を lock ファイル通りに再現
+      - name: Install dependencies
+        run: npm ci
+
+      # ④ ESLint（コード品質チェック）
+      #    ※ 自動修正はしない
+      - name: Run ESLint
+        run: npm run lint
+
+      # ⑤ Prettier（フォーマット確認のみ）
+      #    ※ --check なので自動修正しない
+      - name: Run Prettier check
+        run: npx prettier --check .
+
+  backend:
+    name: Backend (Ruff)
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./backend
+
+    steps:
+      # ① リポジトリをclone
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ② Python をセットアップ
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      # ③ Python依存関係をインストール
+      #    ruff は requirements.txt に含まれている前提
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # ④ Ruff によるLintチェック
+      #    ※ 自動修正しない
+      - name: Run Ruff lint
+        run: ruff check .
+
+      # ⑤ Ruff フォーマットチェック
+      #    ※ --check なので自動修正しない
+      - name: Run Ruff format check
+        run: ruff format --check .
+

@@ -1,5 +1,5 @@
 // frontend/lib/progress.ts
-const KEY = "sodachikyu:progress";
+const KEY = 'sodachikyu:progress';
 
 function todayKey() {
   const now = new Date();
