@@ -1,118 +1,54 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import Link from "next/link";
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [msg, setMsg] = useState<{ type: "ok" | "ng"; text: string } | null>(
-    null
-  );
+  const [msg, setMsg] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const onLogin = async () => {
-    setMsg(null);
-
-    // 簡易バリデーション（デモ用）
-    if (!email.includes("@")) {
-      setMsg({ type: "ng", text: "メールアドレスの形式が正しくありません" });
-      return;
-    }
-    if (password.length < 6) {
-      setMsg({ type: "ng", text: "パスワードは6文字以上にしてください" });
+    if (!email || !password) {
+      setMsg("メールアドレスとパスワードを入力してください");
       return;
     }
 
-    // ✅ いまはモック
-    setMsg({ type: "ok", text: "（いまはモック）ログインできた想定です" });
+    setLoading(true);
+    setMsg(""); 
 
-    // TODO: Firebaseに切り替える時はここを差し替え
-    // signInWithEmailAndPassword(auth, email, password)
-    // 成功したら router.push("/home") など
+    try {
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      const allowedEmails = process.env.NEXT_PUBLIC_ALLOWED_EMAILS?.split(",") || [];
+      
+      if (!allowedEmails.includes(result.user.email || "")) {
+        setMsg("アドレスが正しくないです。");
+        await signOut(auth); 
+        return; 
+      }
+
+      router.push("/home"); // 🏠 地球のページへ
+      
+    } catch (e: any) {
+      setMsg("ログインに失敗しました。パスワード等を確認してください。");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <main style={{ minHeight: "100vh", display: "grid", placeItems: "center" }}>
-      <section
-        style={{
-          width: "min(520px, 92vw)",
-          padding: 24,
-          border: "1px solid #eee",
-          borderRadius: 16,
-          display: "grid",
-          gap: 14,
-        }}
-      >
-        <header style={{ display: "grid", gap: 6 }}>
-          <h1 style={{ margin: 0, fontSize: 22 }}>ログイン</h1>
-          <p style={{ margin: 0, opacity: 0.7 }}>
-            メールアドレスとパスワードを入力してください
-          </p>
-        </header>
-
-        <label style={{ display: "grid", gap: 6 }}>
-          <span style={{ fontSize: 12, opacity: 0.8 }}>メール</span>
-          <input
-            type="email"
-            placeholder="example@gmail.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={{
-              padding: 12,
-              borderRadius: 12,
-              border: "1px solid #ddd",
-            }}
-          />
-        </label>
-
-        <label style={{ display: "grid", gap: 6 }}>
-          <span style={{ fontSize: 12, opacity: 0.8 }}>パスワード</span>
-          <input
-            type="password"
-            placeholder="6文字以上"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            style={{
-              padding: 12,
-              borderRadius: 12,
-              border: "1px solid #ddd",
-            }}
-          />
-        </label>
-
-        <button
-          onClick={onLogin}
-          style={{
-            padding: 12,
-            borderRadius: 12,
-            border: "1px solid #111",
-            background: "white",
-            cursor: "pointer",
-            fontWeight: 700,
-          }}
-        >
-          ログイン
-        </button>
-
-        {msg && (
-          <p
-            style={{
-              margin: 0,
-              padding: 12,
-              borderRadius: 12,
-              border: "1px solid #eee",
-              background: msg.type === "ok" ? "#f4fff7" : "#fff4f4",
-            }}
-          >
-            {msg.text}
-          </p>
-        )}
-
-        <footer style={{ display: "flex", gap: 8, fontSize: 14 }}>
-          <span>はじめての方は</span>
-          <Link href="/signup">新規登録</Link>
-        </footer>
-      </section>
+    <main style={{ padding: "40px 24px", textAlign: "center", maxWidth: "400px", margin: "0 auto" }}>
+      <h1>ログイン</h1>
+      <input type="email" placeholder="メールアドレス" value={email} onChange={(e) => setEmail(e.target.value)} style={{ display: "block", width: "100%", padding: "12px", margin: "10px 0", borderRadius: "8px", border: "1px solid #ccc" }} />
+      <input type="password" placeholder="パスワード" value={password} onChange={(e) => setPassword(e.target.value)} style={{ display: "block", width: "100%", padding: "12px", margin: "10px 0", borderRadius: "8px", border: "1px solid #ccc" }} />
+      {msg && <p style={{ color: "red" }}>{msg}</p>}
+      <button onClick={onLogin} disabled={loading} style={{ width: "100%", padding: "14px", backgroundColor: "#4CAF50", color: "white", borderRadius: "25px", border: "none", fontWeight: "bold", cursor: "pointer" }}>
+        {loading ? "ログイン中..." : "ログイン"}
+      </button>
     </main>
   );
 }
