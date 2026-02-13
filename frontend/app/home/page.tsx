@@ -8,12 +8,10 @@ export default function HomePage() {
 
   // ✅ useEffect を使わず、useState 初期化で localStorage を読む
   const [count, setCount] = useState(() => {
-    if (typeof window === "undefined") return 0;
-    const savedCount = localStorage.getItem("actionCount");
+    if (typeof window === 'undefined') return 0;
+    const savedCount = localStorage.getItem('actionCount');
     return savedCount ? parseInt(savedCount, 10) : 0;
-
-
-});
+  });
 
   // ✅ 指摘通り定義を整理。実際のファイル名に合わせて .png.jpg に修正
   const earthImage = count >= 5 ? '/earth-happy.png.jpg' : '/earth-normal.png.jpg';
