@@ -4,6 +4,7 @@
 
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
+from fastapi import HTTPException
 
 from app.models.action_log import ActionLog
 from app.models.action import Action
@@ -18,7 +19,7 @@ def create_action_log(db: Session, user_id, action_id: int):
     action = db.query(Action).filter(Action.id == action_id).first()
 
     if not action:
-        raise ValueError("Action not found")
+        raise HTTPException(status_code=404, detail="Action not found")
 
     # 1日1回制御（UniqueConstraintでも守られるが事前チェック）
     existing = (
@@ -32,18 +33,20 @@ def create_action_log(db: Session, user_id, action_id: int):
     )
 
     # 存在しなければ新しいDBレコードを作成
-    if not existing:
-        log = ActionLog(user_id=user_id, action_id=action_id, action_date=today)
+    if existing:
+        raise HTTPException(status_code=409, detail="Already executed today")
 
-        # 保存対象に追加
-        db.add(log)
+    log = ActionLog(user_id=user_id, action_id=action_id, action_date=today)
 
-        try:
-            # 保存確定
-            db.commit()
-            # UniqueConstraint違反時にエラー回避
-        except IntegrityError:
-            db.rollback()
+    # 保存対象に追加
+    db.add(log)
+
+    try:
+        db.commit()
+    except IntegrityError:
+        # UniqueConstraint違反時にエラー回避
+        db.rollback()
+        raise HTTPException(status_code=409, detail="Already executed today")
 
     # 今日のステータス取得、今日の状態を再計算
     status = build_today_status(db, user_id)
