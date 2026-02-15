@@ -14,10 +14,7 @@ def build_today_status(db: Session, user_id):
     # action_logsテーブルでログイン中ユーザーと今日の日付で絞り件数を数える
     count = (
         db.query(ActionLog)
-        .filter(
-            ActionLog.user_id == user_id,
-            ActionLog.action_date == today
-        )
+        .filter(ActionLog.user_id == user_id, ActionLog.action_date == today)
         .count()
     )
 
@@ -27,7 +24,7 @@ def build_today_status(db: Session, user_id):
         "server_date": today,
         "action_count_today": count,
         "earth_state": earth_state,
-        "message": message
+        "message": message,
     }
 
 

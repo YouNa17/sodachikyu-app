@@ -12,13 +12,14 @@ from app.services.status_service import build_today_status
 # エンドポイントのベースは /api/status Swaggerでは「status」グループに入る
 router = APIRouter(prefix="/api/status", tags=["status"])
 
+
 # 今日の状態を取得するAPI
 @router.get("/today", response_model=TodayStatusResponse)
 def get_today_status(
     # トークン検証済みユーザーを取得
-    current_user = Depends(get_current_user),
+    current_user=Depends(get_current_user),
     # DBセッション自動取得
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
 
     return build_today_status(db, current_user.id)

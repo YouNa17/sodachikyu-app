@@ -5,6 +5,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from app.db.base import Base
 
+
 class ActionLog(Base):
     __tablename__ = "action_logs"
 
@@ -16,10 +17,7 @@ class ActionLog(Base):
 
     __table_args__ = (
         UniqueConstraint(
-            "user_id",
-            "action_id",
-            "action_date",
-            name="unique_user_action_per_day"
+            "user_id", "action_id", "action_date", name="unique_user_action_per_day"
         ),
     )
 

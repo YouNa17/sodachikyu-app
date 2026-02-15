@@ -16,6 +16,6 @@ router = APIRouter(prefix="/api/categories", tags=["actions"])
 def get_actions(
     category_id: int,
     current_user=Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     return get_actions_by_category(db, current_user.id, category_id)

@@ -13,18 +13,11 @@ def get_actions_by_category(db: Session, user_id, category_id: int):
     today = get_jst_today()
 
     # actionテーブルを見て指定したカテゴリだけ抽出し全件取得
-    actions = (
-        db.query(Action)
-        .filter(Action.category_id == category_id)
-        .all()
-    )
+    actions = db.query(Action).filter(Action.category_id == category_id).all()
     # 今日のログ取得。今日のログイン中ユーザーの実行されたaction_idだけ取得
     today_logs = (
         db.query(ActionLog.action_id)
-        .filter(
-            ActionLog.user_id == user_id,
-            ActionLog.action_date == today
-        )
+        .filter(ActionLog.user_id == user_id, ActionLog.action_date == today)
         .all()
     )
 
@@ -37,12 +30,9 @@ def get_actions_by_category(db: Session, user_id, category_id: int):
             id=a.id,
             title=a.title,
             description=a.description,
-            done_today=a.id in done_ids
+            done_today=a.id in done_ids,
         )
         for a in actions
     ]
 
-    return {
-        "server_date": today,
-        "actions": response_actions
-    }
+    return {"server_date": today, "actions": response_actions}

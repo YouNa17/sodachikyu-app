@@ -3,13 +3,14 @@
 # -----------------
 from app.models.user import User
 
+
 def get_or_create_user(db, decoded_token: dict):
     firebase_uid = decoded_token["uid"]
 
-# DBでログインしたFirebaseUIDがいるか検索
+    # DBでログインしたFirebaseUIDがいるか検索
     user = db.query(User).filter(User.firebase_uid == firebase_uid).first()
 
-# ユーザーがいなかった場合
+    # ユーザーがいなかった場合
     if not user:
         # 新しいUserインスタンスを作る
         user = User(firebase_uid=firebase_uid)

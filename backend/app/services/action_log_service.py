@@ -26,19 +26,15 @@ def create_action_log(db: Session, user_id, action_id: int):
         .filter(
             ActionLog.user_id == user_id,
             ActionLog.action_id == action_id,
-            ActionLog.action_date == today
+            ActionLog.action_date == today,
         )
         .first()
     )
 
     # 存在しなければ新しいDBレコードを作成
     if not existing:
-        log = ActionLog(
-            user_id=user_id,
-            action_id=action_id,
-            action_date=today
-        )
-        
+        log = ActionLog(user_id=user_id, action_id=action_id, action_date=today)
+
         # 保存対象に追加
         db.add(log)
 

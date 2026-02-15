@@ -11,7 +11,7 @@ from app.models.user import User
 
 
 def get_current_user(
-        # トークン検証、成功するとdecodedに情報入る
+    # トークン検証、成功するとdecodedに情報入る
     decoded=Depends(verify_token),
     # DBセッション取得、DBを使える状態にする
     db: Session = Depends(get_db),
