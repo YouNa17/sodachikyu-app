@@ -3,7 +3,7 @@ from datetime import datetime
 
 from sqlalchemy import String, DateTime
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
 
@@ -28,3 +28,5 @@ class User(Base):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
     )
+
+    logs = relationship("ActionLog", back_populates="user", cascade="all, delete")
