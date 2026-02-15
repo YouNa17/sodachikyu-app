@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from app.db.session import engine
 from sqlalchemy import text
-from app.api.routers import users
+from app.api.routers import users, status
 
 app = FastAPI()
 
@@ -20,3 +20,4 @@ def test_connection():
 
 
 app.include_router(users.router)
+app.include_router(status.router)
