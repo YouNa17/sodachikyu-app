@@ -35,7 +35,7 @@ def _build_earth_state(count: int):
     # 地球状態ロジック（将来AIに置き換え可能)
     if count == 0:
         return "normal", "今日もここに来てくれてありがとう"
-    elif count < 3:
+    elif count < 5:
         return "smile", "いい調子！小さな一歩が未来を変えるよ"
     else:
         return "happy", "素晴らしい！地球も喜んでるよ"
