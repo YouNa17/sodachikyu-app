@@ -1,10 +1,12 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { auth } from '@/lib/firebase';
-// ✨ FirebaseErrorは 'firebase/app' から、関数は 'firebase/auth' から読み込む
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
-import { FirebaseError } from 'firebase/app';
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  FirebaseError,
+} from 'firebase/auth';
 
 interface Star {
   top: string;
@@ -18,20 +20,14 @@ export default function LoginPage() {
   const [isJumping, setIsJumping] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [mounted, setMounted] = useState(false);
 
-  // ✨ 初期値に関数を渡してランダム生成（useEffectエラー対策）
-  const [stars] = useState<Star[]>(() => 
+  const [stars] = useState<Star[]>(() =>
     [...Array(12)].map(() => ({
       top: `${Math.random() * 100}%`,
       left: `${Math.random() * 100}%`,
       delay: `${Math.random() * 3}s`,
-    }))
+    })),
   );
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const handleStart = async () => {
     if (!email || !password) {
@@ -57,35 +53,153 @@ export default function LoginPage() {
     }
   };
 
-  if (!mounted) return null;
-
   return (
-    <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#e0f7fa', position: 'relative', overflow: 'hidden', padding: '20px' }}>
+    <main
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#e0f7fa',
+        position: 'relative',
+        overflow: 'hidden',
+        padding: '20px',
+      }}
+    >
       <div style={{ position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none' }}>
         {stars.map((star, i) => (
-          <div key={i} className="star" style={{ position: 'absolute', top: star.top, left: star.left, animationDelay: star.delay, fontSize: '24px' }}>✨</div>
+          <div
+            key={i}
+            className="star"
+            style={{
+              position: 'absolute',
+              top: star.top,
+              left: star.left,
+              animationDelay: star.delay,
+              fontSize: '24px',
+            }}
+          >
+            ✨
+          </div>
         ))}
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: '340px', position: 'relative', zIndex: 10 }}>
-        <div style={{ width: '180px', height: '180px', backgroundImage: 'url("/normal.jpg")', backgroundSize: 'cover', backgroundPosition: 'center', borderRadius: '50%', border: '6px solid white', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', marginBottom: '-40px', zIndex: 12, animation: isJumping ? 'jumpUp 0.8s forwards' : 'poyon 3s ease-in-out infinite' }}></div>
-        <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.92)', backdropFilter: 'blur(5px)', width: '100%', padding: '50px 25px 30px 25px', borderRadius: '40px', boxShadow: '0 15px 35px rgba(0,0,0,0.1)', textAlign: 'center', zIndex: 11, border: '2px solid white', animation: isJumping ? 'shake 0.5s ease-in-out' : 'none' }}>
-          <h1 style={{ color: '#00796b', fontSize: '28px', fontWeight: 'bold', marginBottom: '5px' }}>そだちきゅ！</h1>
-          <p style={{ color: '#00695c', fontSize: '14px', marginBottom: '20px' }}>{isRegisterMode ? 'あたらしく登録しよう 🌱' : 'いっしょに地球を育てよう 🌱'}</p>
+
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          width: '100%',
+          maxWidth: '340px',
+          position: 'relative',
+          zIndex: 10,
+        }}
+      >
+        <div
+          style={{
+            width: '180px',
+            height: '180px',
+            backgroundImage: 'url("/normal.jpg")',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            borderRadius: '50%',
+            border: '6px solid white',
+            boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
+            marginBottom: '-40px',
+            zIndex: 12,
+            animation: isJumping ? 'jumpUp 0.8s forwards' : 'poyon 3s ease-in-out infinite',
+          }}
+        ></div>
+
+        <div
+          style={{
+            backgroundColor: 'rgba(255, 255, 255, 0.92)',
+            backdropFilter: 'blur(5px)',
+            width: '100%',
+            padding: '50px 25px 30px 25px',
+            borderRadius: '40px',
+            boxShadow: '0 15px 35px rgba(0,0,0,0.1)',
+            textAlign: 'center',
+            zIndex: 11,
+            border: '2px solid white',
+            animation: isJumping ? 'shake 0.5s ease-in-out' : 'none',
+          }}
+        >
+          <h1 style={{ color: '#00796b', fontSize: '28px', fontWeight: 'bold', marginBottom: '5px' }}>
+            そだちきゅ！
+          </h1>
+
+          <p style={{ color: '#00695c', fontSize: '14px', marginBottom: '20px' }}>
+            {isRegisterMode ? 'あたらしく登録しよう 🌱' : 'いっしょに地球を育てよう 🌱'}
+          </p>
+
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <input type="email" placeholder="メールアドレス" value={email} onChange={(e) => setEmail(e.target.value)} style={inputStyle} />
-            <input type="password" placeholder="パスワード" value={password} onChange={(e) => setPassword(e.target.value)} style={inputStyle} />
-            <button onClick={handleStart} disabled={isJumping} style={{ padding: '16px', backgroundColor: isJumping ? '#ccc' : '#48BB78', color: 'white', borderRadius: '30px', border: 'none', fontSize: '18px', fontWeight: 'bold', cursor: 'pointer', marginTop: '10px' }}>
+            <input
+              type="email"
+              placeholder="メールアドレス"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              style={inputStyle}
+            />
+            <input
+              type="password"
+              placeholder="パスワード"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              style={inputStyle}
+            />
+
+            <button
+              onClick={handleStart}
+              disabled={isJumping}
+              style={{
+                padding: '16px',
+                backgroundColor: isJumping ? '#ccc' : '#48BB78',
+                color: 'white',
+                borderRadius: '30px',
+                border: 'none',
+                fontSize: '18px',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                marginTop: '10px',
+              }}
+            >
               {isJumping ? '出発！' : isRegisterMode ? '登録してはじめる' : 'ログインしてはじめる'}
             </button>
-            <button onClick={() => setIsRegisterMode(!isRegisterMode)} style={{ background: 'none', border: 'none', color: '#00796b', textDecoration: 'underline', fontSize: '13px', cursor: 'pointer', marginTop: '10px' }}>
+
+            <button
+              onClick={() => setIsRegisterMode(!isRegisterMode)}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: '#00796b',
+                textDecoration: 'underline',
+                fontSize: '13px',
+                cursor: 'pointer',
+                marginTop: '10px',
+              }}
+            >
               {isRegisterMode ? 'ログイン画面にもどる' : 'あたらしく登録する方はこちら'}
             </button>
           </div>
         </div>
       </div>
-      <style dangerouslySetInnerHTML={{ __html: `@keyframes poyon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } } @keyframes jumpUp { 0% { transform: translateY(0) scale(1.1); } 20% { transform: translateY(20px) scale(0.9, 1.1); } 100% { transform: translateY(-1000px) scale(1); } } @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } } @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); } } .star { animation: twinkle 3s infinite ease-in-out; }` }} />
+
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `@keyframes poyon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } } @keyframes jumpUp { 0% { transform: translateY(0) scale(1.1); } 20% { transform: translateY(20px) scale(0.9, 1.1); } 100% { transform: translateY(-1000px) scale(1); } } @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } } @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); } } .star { animation: twinkle 3s infinite ease-in-out; }`,
+        }}
+      />
     </main>
   );
 }
 
-const inputStyle = { width: '100%', padding: '12px 15px', borderRadius: '20px', border: '1px solid #ccc', fontSize: '15px', outline: 'none', boxSizing: 'border-box' as const };
+const inputStyle = {
+  width: '100%',
+  padding: '12px 15px',
+  borderRadius: '20px',
+  border: '1px solid #ccc',
+  fontSize: '15px',
+  outline: 'none',
+  boxSizing: 'border-box' as const,
+};
