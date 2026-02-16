@@ -1,6 +1,8 @@
 'use client';
+
+import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 const ACTION_DATA: Record<
   string,
@@ -94,6 +96,13 @@ const ACTION_DATA: Record<
   },
 };
 
+function getInitialActionCount(): number {
+  if (typeof window === 'undefined') return 0;
+  const saved = window.localStorage.getItem('actionCount');
+  const n = saved ? Number.parseInt(saved, 10) : 0;
+  return Number.isFinite(n) ? n : 0;
+}
+
 export default function ActionListPage() {
   const params = useParams();
   const router = useRouter();
@@ -104,18 +113,21 @@ export default function ActionListPage() {
     null,
   );
   const [isFinished, setIsFinished] = useState(false);
-  const [currentCount, setCurrentCount] = useState(0);
 
-  useEffect(() => {
-    const savedCount = localStorage.getItem('actionCount');
-    setCurrentCount(savedCount ? parseInt(savedCount) : 0);
-  }, []);
+  // ✅ useEffectでsetStateしない（lintエラー回避）
+  const [currentCount, setCurrentCount] = useState<number>(() => getInitialActionCount());
+
+  const isOhuro =
+    (selectedAction?.label ?? '').includes('湯') || (selectedAction?.label ?? '').includes('水');
 
   const handleDone = () => {
-    const newCount = currentCount + 1;
-    setCurrentCount(newCount);
-    localStorage.setItem('actionCount', newCount.toString());
-    localStorage.setItem('lastActionTitle', selectedAction?.label || '');
+    // ✅ 関数型更新にして、localStorage更新もここで完結
+    setCurrentCount((prev) => {
+      const next = prev + 1;
+      window.localStorage.setItem('actionCount', String(next));
+      window.localStorage.setItem('lastActionTitle', selectedAction?.label || '');
+      return next;
+    });
     setIsFinished(true);
   };
 
@@ -143,6 +155,7 @@ export default function ActionListPage() {
       </button>
 
       <h1 style={{ textAlign: 'center', color: '#2F855A' }}>{data.title}</h1>
+
       <div style={{ display: 'grid', gap: '15px', marginTop: '20px' }}>
         {data.actions.map((a) => (
           <button
@@ -190,6 +203,7 @@ export default function ActionListPage() {
           >
             <h2>{selectedAction.label}</h2>
             <p style={{ margin: '20px 0', textAlign: 'left' }}>{selectedAction.detail}</p>
+
             <button
               onClick={handleDone}
               style={{
@@ -205,6 +219,7 @@ export default function ActionListPage() {
             >
               できた！
             </button>
+
             <button
               onClick={() => setSelectedAction(null)}
               style={{
@@ -247,19 +262,32 @@ export default function ActionListPage() {
               fontWeight: 'bold',
             }}
           >
-            {selectedAction?.label.includes('湯') || selectedAction?.label.includes('水')
-              ? 'あ〜極楽極楽…🌍♨️'
-              : 'ナイスアクション！🌱'}
+            {isOhuro ? 'あ〜極楽極楽…🌍♨️' : 'ナイスアクション！🌱'}
           </div>
-          <img
-            src={
-              selectedAction?.label.includes('湯') || selectedAction?.label.includes('水')
-                ? '/ohuro.jpg'
-                : '/normal.jpg'
-            }
-            style={{ width: '200px', borderRadius: '50%', border: '4px solid #48BB78' }}
-          />
+
+          {/* ✅ <img> を <Image> に（no-img-element / alt-text 対策） */}
+          <div
+            style={{
+              position: 'relative',
+              width: '200px',
+              height: '200px',
+              borderRadius: '50%',
+              overflow: 'hidden',
+              border: '4px solid #48BB78',
+            }}
+          >
+            <Image
+              src={isOhuro ? '/ohuro.jpg' : '/normal.jpg'}
+              alt={isOhuro ? 'お風呂でリラックスするちきゅまる' : 'ちきゅまる'}
+              fill
+              sizes="200px"
+              style={{ objectFit: 'cover' }}
+              priority
+            />
+          </div>
+
           <h2 style={{ marginTop: '20px' }}>{currentCount}回目のアクション！</h2>
+
           <div style={{ display: 'grid', gap: '10px', marginTop: '30px', width: '250px' }}>
             <button
               onClick={() => {
@@ -278,6 +306,7 @@ export default function ActionListPage() {
             >
               ほかのアクションもする
             </button>
+
             <button
               onClick={() => router.push('/home')}
               style={{

@@ -1,4 +1,6 @@
 'use client';
+
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 export default function CategoryPage() {
@@ -46,7 +48,7 @@ export default function CategoryPage() {
         今からどこから地球を救う？ 🌱
       </p>
 
-      {/* 🌏 1つ目のちきゅまる（左下：大きく・中央寄り・吹き出し付き） */}
+      {/* 🌏 1つ目のちきゅまる（左下） */}
       <div
         style={{
           position: 'absolute',
@@ -89,6 +91,7 @@ export default function CategoryPage() {
             }}
           ></div>
         </div>
+
         {/* 本体画像 */}
         <div
           style={{
@@ -98,17 +101,21 @@ export default function CategoryPage() {
             overflow: 'hidden',
             border: '6px solid white',
             boxShadow: '0 10px 30px rgba(0,0,0,0.15)',
+            position: 'relative',
           }}
         >
-          <img
+          <Image
             src="/normal.jpg"
-            alt="ちきゅまる1"
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            alt="ちきゅまる"
+            fill
+            sizes="150px"
+            style={{ objectFit: 'cover' }}
+            priority
           />
         </div>
       </div>
 
-      {/* 🌏 2つ目のちきゅまる（右上：大きく・中央寄り） */}
+      {/* 🌏 2つ目のちきゅまる（右上） */}
       <div
         style={{
           position: 'absolute',
@@ -124,11 +131,15 @@ export default function CategoryPage() {
           animation: 'float2 4s ease-in-out infinite 1s',
         }}
       >
-        <img
-          src="/normal.jpg"
-          alt="ちきゅまる2"
-          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-        />
+        <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+          <Image
+            src="/normal.jpg"
+            alt="ちきゅまる"
+            fill
+            sizes="170px"
+            style={{ objectFit: 'cover' }}
+          />
+        </div>
       </div>
 
       {/* カテゴリーボタン一覧 */}

@@ -1,6 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { auth } from '@/lib/firebase';
 import {
   signInWithEmailAndPassword,
@@ -20,9 +20,8 @@ export default function LoginPage() {
   const [isJumping, setIsJumping] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [mounted, setMounted] = useState(false);
 
-  // ✨ setStateエラーを消すための書き方（見た目は変わりません）
+  // ✨ 初期化はuseStateの初期関数でOK（Effect不要）
   const [stars] = useState<Star[]>(() =>
     [...Array(12)].map(() => ({
       top: `${Math.random() * 100}%`,
@@ -30,10 +29,6 @@ export default function LoginPage() {
       delay: `${Math.random() * 3}s`,
     })),
   );
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const handleStart = async () => {
     if (!email || !password) {
@@ -58,8 +53,6 @@ export default function LoginPage() {
       }
     }
   };
-
-  if (!mounted) return null;
 
   return (
     <main
@@ -91,6 +84,7 @@ export default function LoginPage() {
           </div>
         ))}
       </div>
+
       <div
         style={{
           display: 'flex',
@@ -102,7 +96,6 @@ export default function LoginPage() {
           zIndex: 10,
         }}
       >
-        {/* 🌏 ちきゅまるのデザイン維持 */}
         <div
           style={{
             width: '180px',
@@ -118,6 +111,7 @@ export default function LoginPage() {
             animation: isJumping ? 'jumpUp 0.8s forwards' : 'poyon 3s ease-in-out infinite',
           }}
         ></div>
+
         <div
           style={{
             backgroundColor: 'rgba(255, 255, 255, 0.92)',
@@ -140,6 +134,7 @@ export default function LoginPage() {
           <p style={{ color: '#00695c', fontSize: '14px', marginBottom: '20px' }}>
             {isRegisterMode ? 'あたらしく登録しよう 🌱' : 'いっしょに地球を育てよう 🌱'}
           </p>
+
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <input
               type="email"
@@ -155,6 +150,7 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               style={inputStyle}
             />
+
             <button
               onClick={handleStart}
               disabled={isJumping}
@@ -172,6 +168,7 @@ export default function LoginPage() {
             >
               {isJumping ? '出発！' : isRegisterMode ? '登録してはじめる' : 'ログインしてはじめる'}
             </button>
+
             <button
               onClick={() => setIsRegisterMode(!isRegisterMode)}
               style={{
@@ -189,6 +186,7 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
+
       <style
         dangerouslySetInnerHTML={{
           __html: `@keyframes poyon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } } @keyframes jumpUp { 0% { transform: translateY(0) scale(1.1); } 20% { transform: translateY(20px) scale(0.9, 1.1); } 100% { transform: translateY(-1000px) scale(1); } } @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } } @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); } } .star { animation: twinkle 3s infinite ease-in-out; }`,
