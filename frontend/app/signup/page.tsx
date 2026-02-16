@@ -17,40 +17,30 @@ export default function SignupPage() {
       setMsg('メールアドレスとパスワードを入力してください');
       return;
     }
-
     if (password.length < 6) {
       setMsg('パスワードは6文字以上で入力してください');
       return;
     }
-
     setLoading(true);
     setMsg('');
 
     try {
-      // 1. Firebaseにユーザーを作成
       const result = await createUserWithEmailAndPassword(auth, email, password);
-
-      // 2. 許可リストのチェック
       const allowedEmails = process.env.NEXT_PUBLIC_ALLOWED_EMAILS?.split(',') || [];
 
-      if (!allowedEmails.includes(result.user.email || '')) {
-        // リストにない場合はメッセージを出して、即座にログアウトさせる
+      if (allowedEmails.length > 0 && !allowedEmails.includes(result.user.email || '')) {
         setMsg('このアドレスは許可されていません。');
         await signOut(auth);
         return;
       }
 
-      // 3. 【修正ポイント】登録成功後、マイページ（/home）へ遷移 🚀
-      setMsg('登録成功！');
+      setMsg('登録成功！地球へようこそ！');
       router.push('/home');
-    } catch (e: unknown) {
-      console.error(e);
+    } catch (e: any) {
       if (e.code === 'auth/email-already-in-use') {
         setMsg('このメールアドレスは既に登録されています');
-      } else if (e.code === 'auth/invalid-email') {
-        setMsg('メールアドレスの形式が正しくありません');
       } else {
-        setMsg('登録に失敗しました: ' + e.code);
+        setMsg('登録に失敗しました');
       }
     } finally {
       setLoading(false);
@@ -60,59 +50,87 @@ export default function SignupPage() {
   return (
     <main
       style={{
-        padding: '40px 24px',
-        display: 'grid',
-        gap: '16px',
+        padding: '60px 24px',
+        textAlign: 'center',
         maxWidth: '400px',
         margin: '0 auto',
-        textAlign: 'center',
+        backgroundColor: '#e0f7fa',
+        minHeight: '100vh',
       }}
     >
-      <h1 style={{ marginBottom: '20px' }}>新規登録</h1>
+      <div style={{ marginBottom: '20px' }}>
+        <img
+          src="/normal.jpg"
+          alt="ちきゅまる"
+          style={{
+            width: '100px',
+            height: '100px',
+            borderRadius: '50%',
+            border: '3px solid #4CAF50',
+            objectFit: 'cover',
+          }}
+        />
+      </div>
+      <h1 style={{ color: '#00796b', marginBottom: '10px' }}>新しく地球を育てる</h1>
+      <p style={{ color: '#666', marginBottom: '30px' }}>アカウントを作成してスタート！</p>
 
       <input
         type="email"
         placeholder="メールアドレス"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        style={{ padding: '12px', borderRadius: '8px', border: '1px solid #ccc' }}
+        style={{
+          display: 'block',
+          width: '100%',
+          padding: '12px',
+          margin: '10px 0',
+          borderRadius: '8px',
+          border: '1px solid #ccc',
+        }}
       />
-
       <input
         type="password"
         placeholder="パスワード（6文字以上）"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        style={{ padding: '12px', borderRadius: '8px', border: '1px solid #ccc' }}
+        style={{
+          display: 'block',
+          width: '100%',
+          padding: '12px',
+          margin: '10px 0',
+          borderRadius: '8px',
+          border: '1px solid #ccc',
+        }}
       />
 
-      {msg && <p style={{ color: 'red', fontSize: '14px', margin: '0' }}>{msg}</p>}
+      {msg && <p style={{ color: '#e53e3e', fontSize: '14px', margin: '10px 0' }}>{msg}</p>}
 
       <button
         onClick={onSignup}
         disabled={loading}
         style={{
+          width: '100%',
           padding: '14px',
-          backgroundColor: loading ? '#ccc' : '#4CAF50',
+          marginTop: '20px',
+          backgroundColor: '#4CAF50',
           color: 'white',
-          border: 'none',
           borderRadius: '25px',
+          border: 'none',
           fontWeight: 'bold',
           fontSize: '16px',
-          cursor: loading ? 'not-allowed' : 'pointer',
-          marginTop: '10px',
+          cursor: 'pointer',
         }}
       >
-        {loading ? '登録中...' : '登録する'}
+        {loading ? '登録中...' : '地球のヒーローになる'}
       </button>
 
-      <div style={{ marginTop: '10px' }}>
+      <div style={{ marginTop: '20px' }}>
         <button
           onClick={() => router.push('/login')}
           style={{
             background: 'none',
             border: 'none',
-            color: '#666',
+            color: '#00796b',
             textDecoration: 'underline',
             cursor: 'pointer',
             fontSize: '14px',
