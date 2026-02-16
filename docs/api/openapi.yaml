@@ -1,0 +1,191 @@
+openapi: 3.0.3
+
+# 基本情報
+info:
+  # バージョン表記
+  version: 1.0.0
+  # タイトル
+  title: sodachikyu API
+  # 説明
+  description: |
+    「そだちきゅ」MVP用 API 仕様。
+    Firebase Authentication による認証を前提とし、
+    日常の環境行動（ミニアクション）の記録と
+    当日の状態取得を行う。
+
+servers:
+  - url: http://localhost:8000  
+
+# 共通定義の置き場
+components:
+  # 認証方式の定義
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+
+    Action:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        done_today:
+          type: boolean
+
+    EarthState:
+      type: string
+      enum:
+        - normal
+        - smile
+        - happy
+      description: >
+        当日の行動数から算出される地球キャラクターの状態
+    
+    StatusToday:
+      type: object
+      properties:
+        server_date:
+          type: string
+          format: date
+        action_count_today:
+          type: integer
+        earth_state:
+          $ref: "#/components/schemas/EarthState"
+        message:
+          type: string
+
+    ActionLogResponse:
+      type: object
+      properties:
+        server_date:
+          type: string
+          format: date
+        action_id:
+          type: integer
+        action_title:
+          type: string
+        action_count_today:
+          type: integer
+        earth_state:
+          $ref: "#/components/schemas/EarthState"
+        message:
+          type: string
+
+# 全APIが認証必須
+security:
+  - bearerAuth: []
+# エンドポイント
+paths:
+  /api/users/me:
+    get:
+      summary:
+        認証済みユーザー情報の取得
+      description: |
+        Firebase UID を元にユーザー情報を取得。
+        未登録の場合は初回アクセス時にサーバー側で初期データを作成し、情報を返す。
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"    # 共通化するところ　$refで参照可能
+
+  /api/status/today:
+    get:
+      summary: 
+        今日の状態の取得
+      description: |
+        当日の行動数・地球の状態・表示メッセージを返す。
+        今日の状態は action_logs から算出される。
+      responses:
+        "200":
+          description: Today's status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusToday"
+
+  /api/categories:
+    get:
+      summary: カテゴリ一覧を取得
+      responses:
+        "200":
+          description: Category list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+
+  /api/categories/{category_id}/actions:
+    get:
+      summary: カテゴリ配下ミニアクション取得
+      parameters:
+        - name: category_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Action list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  server_date:
+                    type: string
+                    format: date
+                  actions:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Action"
+
+  /api/users/me/action-logs:
+    post:
+      summary: ミニアクション実行記録
+      description: |
+        アクションを1日1回まで記録する。
+        成功時はその結果として、今日の状態を返す。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - action_id
+              properties:
+                action_id:
+                  type: integer
+      responses:
+        "201":
+          description: Action logged
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ActionLogResponse"
