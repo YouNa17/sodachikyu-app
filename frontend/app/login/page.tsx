@@ -18,7 +18,7 @@ export default function LoginPage() {
   const [isJumping, setIsJumping] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
+
   // ✨ Math.random() のエラー回避用ステート
   const [stars, setStars] = useState<Star[]>([]);
 
@@ -137,7 +137,9 @@ export default function LoginPage() {
             animation: isJumping ? 'shake 0.5s ease-in-out' : 'none',
           }}
         >
-          <h1 style={{ color: '#00796b', fontSize: '28px', fontWeight: 'bold', marginBottom: '5px' }}>
+          <h1
+            style={{ color: '#00796b', fontSize: '28px', fontWeight: 'bold', marginBottom: '5px' }}
+          >
             そだちきゅ！
           </h1>
           <p style={{ color: '#00695c', fontSize: '14px', marginBottom: '20px' }}>
