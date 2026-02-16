@@ -1,21 +1,39 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 // ✨ Firebaseの設定をインポート
 import { auth } from '@/lib/firebase';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+
+// 星の型の定義
+interface Star {
+  top: string;
+  left: string;
+  delay: string;
+}
 
 export default function LoginPage() {
   const router = useRouter();
   const [isRegisterMode, setIsRegisterMode] = useState(false);
   const [isJumping, setIsJumping] = useState(false);
-  // ✨ 入力フォームの状態管理を追加
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  
+  // ✨ Math.random() のエラー回避用ステート
+  const [stars, setStars] = useState<Star[]>([]);
+
+  // 初回レンダリング時に一度だけ星の位置を計算
+  useEffect(() => {
+    const newStars = [...Array(12)].map(() => ({
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      delay: `${Math.random() * 3}s`,
+    }));
+    setStars(newStars);
+  }, []);
 
   // 🚀 はじめるボタンを押した時の動き
   const handleStart = async () => {
-    // バリデーション（簡易）
     if (!email || !password) {
       alert('メールアドレスとパスワードを入力してね！');
       return;
@@ -23,23 +41,24 @@ export default function LoginPage() {
 
     try {
       if (isRegisterMode) {
-        // ✨ Firebaseで新規登録
         await createUserWithEmailAndPassword(auth, email, password);
       } else {
-        // ✨ Firebaseでログイン
         await signInWithEmailAndPassword(auth, email, password);
       }
 
-      // 成功したらアニメーション開始！
       setIsJumping(true);
 
       setTimeout(() => {
         router.push('/home');
       }, 800);
-    } catch (error: any) {
-      // エラーハンドリング
+    } catch (error: unknown) {
+      // ✨ any型を排除したエラーハンドリング
       console.error(error);
-      alert('エラーが発生したよ: ' + error.message);
+      if (error instanceof Error) {
+        alert('エラーが発生したよ: ' + error.message);
+      } else {
+        alert('予期せぬエラーが発生したよ');
+      }
     }
   };
 
@@ -56,17 +75,17 @@ export default function LoginPage() {
         padding: '20px',
       }}
     >
-      {/* ✨ キラキラエフェクト */}
+      {/* ✨ キラキラエフェクト（修正済み） */}
       <div style={{ position: 'absolute', inset: 0, zIndex: 2 }}>
-        {[...Array(12)].map((_, i) => (
+        {stars.map((star, i) => (
           <div
             key={i}
             className="star"
             style={{
               position: 'absolute',
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
+              top: star.top,
+              left: star.left,
+              animationDelay: star.delay,
               fontSize: '24px',
             }}
           >
@@ -118,9 +137,7 @@ export default function LoginPage() {
             animation: isJumping ? 'shake 0.5s ease-in-out' : 'none',
           }}
         >
-          <h1
-            style={{ color: '#00796b', fontSize: '28px', fontWeight: 'bold', marginBottom: '5px' }}
-          >
+          <h1 style={{ color: '#00796b', fontSize: '28px', fontWeight: 'bold', marginBottom: '5px' }}>
             そだちきゅ！
           </h1>
           <p style={{ color: '#00695c', fontSize: '14px', marginBottom: '20px' }}>
@@ -128,7 +145,6 @@ export default function LoginPage() {
           </p>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {/* ✨ inputにvalueとonChangeを紐付け */}
             <input
               type="email"
               placeholder="メールアドレス"
@@ -154,7 +170,7 @@ export default function LoginPage() {
                 borderRadius: '30px',
                 border: 'none',
                 fontSize: '18px',
-                fontWeight: 'bold',
+                fontWeight: 'bold' as const,
                 cursor: 'pointer',
                 boxShadow: '0 6px 20px rgba(72, 187, 120, 0.3)',
                 marginTop: '10px',
