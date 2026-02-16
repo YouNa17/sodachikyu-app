@@ -126,7 +126,9 @@ export default function LoginPage() {
             animation: isJumping ? 'shake 0.5s ease-in-out' : 'none',
           }}
         >
-          <h1 style={{ color: '#00796b', fontSize: '28px', fontWeight: 'bold', marginBottom: '5px' }}>
+          <h1
+            style={{ color: '#00796b', fontSize: '28px', fontWeight: 'bold', marginBottom: '5px' }}
+          >
             そだちきゅ！
           </h1>
 
