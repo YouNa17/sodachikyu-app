@@ -9,8 +9,11 @@ COPY requirements.txt .
 # Pythonライブラリをインストール
 RUN pip install --no-cache-dir -r requirements.txt
 
-# アプリ本体をコピー
-COPY app ./app
+# アプリとテストをコピー
+COPY  . .
+
+# Pythonパス設定
+ENV PYTHONPATH=/app:/app/app
 
 # FastAPI 起動
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

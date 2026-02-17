@@ -7,6 +7,6 @@ from app.main import app
 @pytest.fixture
 def client():
 
-    # FastAPI TestClient を提供するfixture
+    # FastAPI TestClient fixture
     with TestClient(app) as client:
         yield client
