@@ -163,7 +163,7 @@ export default function HomePage() {
             marginTop: '10px',
           }}
         >
-          ミニアクションをする 🌱
+          ミニアクションをする
         </button>
 
         {/* {view === 'detail' && selectedAction ? (

@@ -120,23 +120,48 @@ export default function ActionListPage() {
       <h1 style={{ textAlign: 'center', color: '#2F855A' }}>{categoryName}</h1>
 
       <div style={{ display: 'grid', gap: '15px', marginTop: '20px' }}>
-        {actions.map((a) => (
-          <button
-            key={a.id}
-            onClick={() => setSelectedAction(a)}
-            style={{
-              padding: '18px',
-              borderRadius: '16px',
-              border: '1px solid #ddd',
-              backgroundColor: 'white',
-              textAlign: 'left',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-            }}
-          >
-            {a.title}
-          </button>
-        ))}
+        {actions.map((a) => {
+          const isDone = a.done_today;
+
+          return (
+            <button
+              key={a.id}
+              onClick={() => !isDone && setSelectedAction(a)}
+              disabled={isDone}
+              style={{
+                padding: '18px',
+                borderRadius: '16px',
+                // ★ 状態で色変更
+                border: isDone ? '2px solid #AFCFC0' : '2px solid #E2E8F0',
+
+                backgroundColor: isDone ? '#F0FFF4' : 'white',
+                textAlign: 'left',
+                fontWeight: 'bold',
+                // ★ 文字色を明示（これが重要）
+                color: isDone ? '#AFCFC0' : '#0f766e',
+
+                cursor: isDone ? 'not-allowed' : 'pointer',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
+              <span>{a.title}</span>
+
+              {isDone && (
+                <span
+                  style={{
+                    fontSize: '14px',
+                    fontWeight: 'bold',
+                    color: '#48BB78',
+                  }}
+                >
+                  ✔ 達成済み
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
 
       {selectedAction && !isFinished && (
@@ -148,6 +173,7 @@ export default function ActionListPage() {
             width: '100%',
             height: '100%',
             backgroundColor: 'rgba(0,0,0,0.6)',
+            color: '#1A202C',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
