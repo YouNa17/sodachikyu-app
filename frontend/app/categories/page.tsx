@@ -2,15 +2,39 @@
 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { fetchWithAuth } from '@/lib/api';
+
+type Category = {
+  id: number;
+  name: string;
+};
 
 export default function CategoryPage() {
   const router = useRouter();
-  const categories = [
-    { id: 'daily', name: '日常の選択', icon: '👜', color: '#FFADAD' },
-    { id: 'food', name: '食べ物', icon: '🥗', color: '#CAFFBF' },
-    { id: 'home', name: '家の中', icon: '🏠', color: '#9BF6FF' },
-    { id: 'waste', name: 'ごみ', icon: '♻️', color: '#FFD6A5' },
-  ];
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  // APIから取得
+  useEffect(() => {
+    async function loadCategories() {
+      try {
+        const data = await fetchWithAuth('/api/categories');
+        setCategories(data);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    loadCategories();
+  }, []);
+
+  // 見た目用の設定
+  const categoryMeta: Record<number, { icon: string; color: string }> = {
+    1: { icon: '👜', color: '#FFADAD' },
+    2: { icon: '🥗', color: '#CAFFBF' },
+    3: { icon: '🏠', color: '#9BF6FF' },
+    4: { icon: '♻️', color: '#FFD6A5' },
+  };
 
   return (
     <main
@@ -105,7 +129,7 @@ export default function CategoryPage() {
           }}
         >
           <Image
-            src="/normal.jpg"
+            src="/smile.jpg"
             alt="ちきゅまる"
             fill
             sizes="150px"
@@ -133,7 +157,7 @@ export default function CategoryPage() {
       >
         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
           <Image
-            src="/normal.jpg"
+            src="/smile.jpg"
             alt="ちきゅまる"
             fill
             sizes="170px"
@@ -154,36 +178,41 @@ export default function CategoryPage() {
           zIndex: 15,
         }}
       >
-        {categories.map((cat) => (
-          <button
-            key={cat.id}
-            onClick={() => router.push(`/categories/${cat.id}`)}
-            style={{
-              padding: '30px 10px',
-              borderRadius: '28px',
-              border: 'none',
-              backgroundColor: 'white',
-              boxShadow: '0 6px 15px rgba(0,0,0,0.08)',
-              cursor: 'pointer',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              transition: 'transform 0.2s',
-            }}
-          >
-            <span style={{ fontSize: '50px', marginBottom: '10px' }}>{cat.icon}</span>
-            <span style={{ fontWeight: 'bold', color: '#333', fontSize: '16px' }}>{cat.name}</span>
-            <div
+        {categories.map((cat) => {
+          const meta = categoryMeta[cat.id] || { icon: '🌱', color: '#ddd' };
+          return (
+            <button
+              key={cat.id}
+              onClick={() => router.push(`/categories/${cat.id}`)}
               style={{
-                width: '40px',
-                height: '5px',
-                backgroundColor: cat.color,
-                marginTop: '10px',
-                borderRadius: '3px',
+                padding: '30px 10px',
+                borderRadius: '28px',
+                border: 'none',
+                backgroundColor: 'white',
+                boxShadow: '0 6px 15px rgba(0,0,0,0.08)',
+                cursor: 'pointer',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                transition: 'transform 0.2s',
               }}
-            ></div>
-          </button>
-        ))}
+            >
+              <span style={{ fontSize: '50px', marginBottom: '10px' }}>{meta.icon}</span>
+              <span style={{ fontWeight: 'bold', color: '#333', fontSize: '16px' }}>
+                {cat.name}
+              </span>
+              <div
+                style={{
+                  width: '40px',
+                  height: '5px',
+                  backgroundColor: meta.color,
+                  marginTop: '10px',
+                  borderRadius: '3px',
+                }}
+              ></div>
+            </button>
+          );
+        })}
       </div>
 
       {/* アニメーションCSS設定 */}

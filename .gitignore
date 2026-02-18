@@ -23,3 +23,6 @@ venv/
 
 # backup
 _backup/
+
+# Firebase keys
+backend/app/core/*.json

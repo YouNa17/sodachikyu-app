@@ -13,14 +13,10 @@ def init_firebase():
         return
 
     # サービスアカウントキーをPythonに渡す
-    cred = credentials.Certificate(
-        {
-            "type": "service_account",
-            "project_id": os.getenv("FIREBASE_PROJECT_ID"),
-            "private_key": os.getenv("FIREBASE_PRIVATE_KEY", "").replace("\\n", "\n"),
-            "client_email": os.getenv("FIREBASE_CLIENT_EMAIL"),
-        }
-    )
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    key_path = os.path.join(base_dir, "core", "serviceAccountKey.json")
+
+    cred = credentials.Certificate(key_path)
 
     # 初期化
     firebase_admin.initialize_app(cred)

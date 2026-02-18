@@ -2,9 +2,27 @@ from fastapi import FastAPI
 from app.db.session import engine
 from sqlalchemy import text
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 from app.api.routers import users, status, categories, actions, action_logs
 
-app = FastAPI()
+
+# =========================
+# lifespan（startup/shutdown処理）
+# =========================
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # startup時：DB接続確認
+    with engine.connect() as conn:
+        conn.execute(text("SELECT 1"))
+    print("DB connected!")
+
+    yield
+
+    # shutdown時（今回は特になし）
+
+
+# lifespanをFastAPIに設定
+app = FastAPI(lifespan=lifespan)
 
 # CORS設定
 origins = [
@@ -29,14 +47,6 @@ app.add_middleware(
 @app.get("/")
 def root():
     return {"message": "FastAPI is running"}
-
-
-# アプリ起動時にDB接続できるかのテスト
-@app.on_event("startup")
-def test_connection():
-    with engine.connect() as conn:
-        conn.execute(text("SELECT 1"))
-    print("DB connected!")
 
 
 app.include_router(users.router)
