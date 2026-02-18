@@ -112,7 +112,7 @@ export default function SignupPage() {
             style={{
               width: '100px',
               height: '100px',
-              backgroundImage: 'url("/normal.jpg")',
+              backgroundImage: 'url("/smile.jpg")',
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               borderRadius: '50%',

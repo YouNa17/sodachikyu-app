@@ -129,7 +129,7 @@ export default function CategoryPage() {
           }}
         >
           <Image
-            src="/normal.jpg"
+            src="/smile.jpg"
             alt="ちきゅまる"
             fill
             sizes="150px"
@@ -157,7 +157,7 @@ export default function CategoryPage() {
       >
         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
           <Image
-            src="/normal.jpg"
+            src="/smile.jpg"
             alt="ちきゅまる"
             fill
             sizes="170px"

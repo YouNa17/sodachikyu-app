@@ -244,6 +244,7 @@ export default function ActionListPage() {
           <div
             style={{
               backgroundColor: '#EBF8FF',
+              color: '#48BB78',
               padding: '15px 25px',
               borderRadius: '20px',
               marginBottom: '20px',
@@ -266,7 +267,7 @@ export default function ActionListPage() {
             }}
           >
             <Image
-              src={isOhuro ? '/ohuro.jpg' : '/normal.jpg'}
+              src={isOhuro ? '/ohuro.jpg' : '/smile.jpg'}
               alt={isOhuro ? 'お風呂でリラックスするちきゅまる' : 'ちきゅまる'}
               fill
               sizes="200px"
@@ -279,10 +280,7 @@ export default function ActionListPage() {
 
           <div style={{ display: 'grid', gap: '10px', marginTop: '30px', width: '250px' }}>
             <button
-              onClick={() => {
-                setIsFinished(false);
-                setSelectedAction(null);
-              }}
+              onClick={() => router.push('/categories')}
               style={{
                 padding: '15px',
                 borderRadius: '30px',

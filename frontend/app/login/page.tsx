@@ -108,7 +108,7 @@ export default function LoginPage() {
           style={{
             width: '180px',
             height: '180px',
-            backgroundImage: 'url("/normal.jpg")',
+            backgroundImage: 'url("/smile.jpg")',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             borderRadius: '50%',
