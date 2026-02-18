@@ -3,96 +3,22 @@
 import { useEffect, useState } from 'react';
 import { fetchWithAuth } from '@/lib/api';
 import { useRouter } from 'next/navigation';
-
-// type Action = {
-//   id: string;
-//   title: string;
-//   point?: number;
-//   desc?: string;
-// };
-
-// type View = 'list' | 'detail';
+import EarthCharacter from '@/components/EarthCharacter';
 
 type StatusResponse = {
   server_date: string;
   action_count_today: number;
-  earth_state: 'normal' | 'smile' | 'happy' | string;
+  earth_state: 'normal' | 'smile' | 'happy';
   message: string;
-};
-
-// 🌏 1) コンポーネント外に移動（Propsで受け取る）
-const Chikyumaru = ({
-  size: baseSize = 160,
-  actionCount,
-}: {
-  size?: number;
-  actionCount: number;
-}) => {
-  const isHappy = actionCount >= 5;
-  const imageUrl = isHappy ? '/happy.jpg' : '/normal.jpg';
-  const size = isHappy ? baseSize * 1.2 : baseSize;
-
-  return (
-    <div
-      style={{
-        width: `${size}px`,
-        height: `${size}px`,
-        backgroundImage: `url("${imageUrl}")`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        borderRadius: '50%',
-        border: '6px solid white',
-        boxShadow: '0 10px 25px rgba(0,0,0,0.12)',
-        margin: '0 auto 14px',
-        transition: 'all 0.5s ease',
-      }}
-      aria-label="ちきゅまる"
-    />
-  );
 };
 
 export default function HomePage() {
   // ✅ Hooksは必ずここで呼び切る
   const [actionCount, setActionCount] = useState<number>(0);
   const [message, setMessage] = useState<string>('');
+  const [earthState, setEarthState] = useState<'normal' | 'smile' | 'happy'>('normal');
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-  // const [view, setView] = useState<View>('list');
-  // const [selectedAction, setSelectedAction] = useState<Action | null>(null);
-
-  // サンプル：ホームで見せるアクション一覧（必要なら差し替えOK）
-  // const actions = useMemo<Action[]>(
-  //   () => [
-  //     { id: 'w1', title: 'マイバッグを使う', point: 1, desc: 'レジ袋を減らすよ' },
-  //     { id: 'f1', title: '残さず食べる', point: 1, desc: '食品ロスを減らすよ' },
-  //     { id: 'e1', title: '電気をこまめに消す', point: 1, desc: 'ムダな消費を減らすよ' },
-  //     { id: 'm1', title: '近距離は歩く', point: 1, desc: '移動のCO2を減らすよ' },
-  //     { id: 'b1', title: '必要な分だけ買う', point: 1, desc: 'ムダ買いを減らすよ' },
-  //   ],
-  //   [],
-  // );
-
-  // const handleOpenDetail = (a: Action) => {
-  //   setSelectedAction(a);
-  //   setView('detail');
-  // };
-
-  // const handleBack = () => {
-  //   setView('list');
-  //   setSelectedAction(null);
-  // };
-
-  // const handleDone = () => {
-  //   // ✅ setActionCount を使う（unused回避）
-  //   setActionCount((prev) => prev + 1);
-  //   // ここでFirebase保存をしたいなら、awaitしてから戻す等に拡張
-  //   handleBack();
-  // };
-
-  // const handleReset = () => {
-  //   setActionCount(0);
-  //   handleBack();
-  // };
 
   // ★ APIから取得
   useEffect(() => {
@@ -101,6 +27,7 @@ export default function HomePage() {
         const data: StatusResponse = await fetchWithAuth('/api/status/today');
         setActionCount(data.action_count_today);
         setMessage(data.message);
+        setEarthState(data.earth_state);
       } catch (err) {
         console.error(err);
       } finally {
@@ -121,7 +48,7 @@ export default function HomePage() {
       <div style={cardStyle}>
         <h1 style={titleStyle}>そだちきゅ</h1>
 
-        <Chikyumaru actionCount={actionCount} />
+        <EarthCharacter earthState={earthState} />
 
         <div
           style={{
