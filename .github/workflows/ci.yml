@@ -80,3 +80,5 @@ jobs:
       # ⑥ pytest 実行（← ★追加）
       - name: Run pytest
         run: pytest -v
+        env:
+          PYTHONPATH: .
