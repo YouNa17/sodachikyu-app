@@ -77,6 +77,12 @@ jobs:
       - name: Run Ruff format check
         run: ruff format --check .
 
+      - name: Create database tables
+        run: python -c "from app.db.base import Base; from app.db.session import engine; Base.metadata.create_all(bind=engine)"
+        env:
+          PYTHONPATH: .
+          DATABASE_URL: sqlite:///./test.db
+
       # ⑥ pytest 実行（← ★追加）
       - name: Run pytest
         run: pytest -v
