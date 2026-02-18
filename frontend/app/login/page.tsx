@@ -2,93 +2,207 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  FirebaseError,
+} from 'firebase/auth';
+
+interface Star {
+  top: string;
+  left: string;
+  delay: string;
+}
 
 export default function LoginPage() {
+  const router = useRouter();
+  const [isRegisterMode, setIsRegisterMode] = useState(false);
+  const [isJumping, setIsJumping] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [msg, setMsg] = useState('');
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
-  const onLogin = async () => {
+  const [stars] = useState<Star[]>(() =>
+    [...Array(12)].map(() => ({
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      delay: `${Math.random() * 3}s`,
+    })),
+  );
+
+  const handleStart = async () => {
     if (!email || !password) {
-      setMsg('メールアドレスとパスワードを入力してください');
+      alert('メールアドレスとパスワードを入力してね！');
       return;
     }
-
-    setLoading(true);
-    setMsg('');
-
     try {
-      const result = await signInWithEmailAndPassword(auth, email, password);
-      const allowedEmails = process.env.NEXT_PUBLIC_ALLOWED_EMAILS?.split(',') || [];
-
-      if (!allowedEmails.includes(result.user.email || '')) {
-        setMsg('アドレスが正しくないです。');
-        await signOut(auth);
-        return;
+      if (isRegisterMode) {
+        await createUserWithEmailAndPassword(auth, email, password);
+      } else {
+        await signInWithEmailAndPassword(auth, email, password);
       }
-
-      router.push('/home'); // 🏠 地球のページへ
-    } catch (e: unknown) {
-      setMsg('ログインに失敗しました。パスワード等を確認してください。');
-    } finally {
-      setLoading(false);
+      setIsJumping(true);
+      setTimeout(() => {
+        router.push('/home');
+      }, 800);
+    } catch (error: unknown) {
+      if (error instanceof FirebaseError) {
+        alert('エラーが発生したよ: ' + error.message);
+      } else {
+        alert('予期せぬエラーが発生したよ');
+      }
     }
   };
 
   return (
     <main
-      style={{ padding: '40px 24px', textAlign: 'center', maxWidth: '400px', margin: '0 auto' }}
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#e0f7fa',
+        position: 'relative',
+        overflow: 'hidden',
+        padding: '20px',
+      }}
     >
-      <h1>ログイン</h1>
-      <input
-        type="email"
-        placeholder="メールアドレス"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
+      <div style={{ position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none' }}>
+        {stars.map((star, i) => (
+          <div
+            key={i}
+            className="star"
+            style={{
+              position: 'absolute',
+              top: star.top,
+              left: star.left,
+              animationDelay: star.delay,
+              fontSize: '24px',
+            }}
+          >
+            ✨
+          </div>
+        ))}
+      </div>
+
+      <div
         style={{
-          display: 'block',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
           width: '100%',
-          padding: '12px',
-          margin: '10px 0',
-          borderRadius: '8px',
-          border: '1px solid #ccc',
-        }}
-      />
-      <input
-        type="password"
-        placeholder="パスワード"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        style={{
-          display: 'block',
-          width: '100%',
-          padding: '12px',
-          margin: '10px 0',
-          borderRadius: '8px',
-          border: '1px solid #ccc',
-        }}
-      />
-      {msg && <p style={{ color: 'red' }}>{msg}</p>}
-      <button
-        onClick={onLogin}
-        disabled={loading}
-        style={{
-          width: '100%',
-          padding: '14px',
-          backgroundColor: '#4CAF50',
-          color: 'white',
-          borderRadius: '25px',
-          border: 'none',
-          fontWeight: 'bold',
-          cursor: 'pointer',
+          maxWidth: '340px',
+          position: 'relative',
+          zIndex: 10,
         }}
       >
-        {loading ? 'ログイン中...' : 'ログイン'}
-      </button>
+        <div
+          style={{
+            width: '180px',
+            height: '180px',
+            backgroundImage: 'url("/normal.jpg")',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            borderRadius: '50%',
+            border: '6px solid white',
+            boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
+            marginBottom: '-40px',
+            zIndex: 12,
+            animation: isJumping ? 'jumpUp 0.8s forwards' : 'poyon 3s ease-in-out infinite',
+          }}
+        ></div>
+
+        <div
+          style={{
+            backgroundColor: 'rgba(255, 255, 255, 0.92)',
+            backdropFilter: 'blur(5px)',
+            width: '100%',
+            padding: '50px 25px 30px 25px',
+            borderRadius: '40px',
+            boxShadow: '0 15px 35px rgba(0,0,0,0.1)',
+            textAlign: 'center',
+            zIndex: 11,
+            border: '2px solid white',
+            animation: isJumping ? 'shake 0.5s ease-in-out' : 'none',
+          }}
+        >
+          <h1
+            style={{ color: '#00796b', fontSize: '28px', fontWeight: 'bold', marginBottom: '5px' }}
+          >
+            そだちきゅ！
+          </h1>
+
+          <p style={{ color: '#00695c', fontSize: '14px', marginBottom: '20px' }}>
+            {isRegisterMode ? 'あたらしく登録しよう 🌱' : 'いっしょに地球を育てよう 🌱'}
+          </p>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <input
+              type="email"
+              placeholder="メールアドレス"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              style={inputStyle}
+            />
+            <input
+              type="password"
+              placeholder="パスワード"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              style={inputStyle}
+            />
+
+            <button
+              onClick={handleStart}
+              disabled={isJumping}
+              style={{
+                padding: '16px',
+                backgroundColor: isJumping ? '#ccc' : '#48BB78',
+                color: 'white',
+                borderRadius: '30px',
+                border: 'none',
+                fontSize: '18px',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                marginTop: '10px',
+              }}
+            >
+              {isJumping ? '出発！' : isRegisterMode ? '登録してはじめる' : 'ログインしてはじめる'}
+            </button>
+
+            <button
+              onClick={() => setIsRegisterMode(!isRegisterMode)}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: '#00796b',
+                textDecoration: 'underline',
+                fontSize: '13px',
+                cursor: 'pointer',
+                marginTop: '10px',
+              }}
+            >
+              {isRegisterMode ? 'ログイン画面にもどる' : 'あたらしく登録する方はこちら'}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `@keyframes poyon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } } @keyframes jumpUp { 0% { transform: translateY(0) scale(1.1); } 20% { transform: translateY(20px) scale(0.9, 1.1); } 100% { transform: translateY(-1000px) scale(1); } } @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } } @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); } } .star { animation: twinkle 3s infinite ease-in-out; }`,
+        }}
+      />
     </main>
   );
 }
+
+const inputStyle = {
+  width: '100%',
+  padding: '12px 15px',
+  borderRadius: '20px',
+  border: '1px solid #ccc',
+  fontSize: '15px',
+  outline: 'none',
+  boxSizing: 'border-box' as const,
+};

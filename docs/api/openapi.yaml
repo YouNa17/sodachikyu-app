@@ -126,6 +126,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/StatusToday"
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal server error
 
   /api/categories:
     get:
@@ -182,12 +186,18 @@ paths:
               properties:
                 action_id:
                   type: integer
-      responses:
-        "201":
-          description: Action logged
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ActionLogResponse"
-        "409":
-          description: Already executed today
+　　　responses:
+       "201":
+         description: Action logged
+         content:
+           application/json:
+             schema: 
+               $ref: "#/components/schemas/ActionLogResponse"
+       "401":
+         description: Unauthorized
+       "404":
+         description: Action not found
+       "409":
+         description: Already executed today
+       "500":
+         description: Internal server error
