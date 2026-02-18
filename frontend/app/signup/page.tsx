@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 // ✨ ここも同様に修正！
 import { createUserWithEmailAndPassword, signOut } from 'firebase/auth';
+import { fetchWithAuth } from '@/lib/api';
 import { FirebaseError } from 'firebase/app';
 import { auth } from '@/lib/firebase';
 
@@ -51,6 +52,11 @@ export default function SignupPage() {
         await signOut(auth);
         return;
       }
+
+      await result.user.getIdToken(true);
+      // バックエンドにユーザー作成させる
+      await fetchWithAuth('/api/users/me');
+
       setMsg('登録成功！地球へようこそ！');
       router.push('/home');
     } catch (e: unknown) {
