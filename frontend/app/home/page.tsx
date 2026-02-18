@@ -54,6 +54,7 @@ const Chikyumaru = ({
 export default function HomePage() {
   // ✅ Hooksは必ずここで呼び切る
   const [actionCount, setActionCount] = useState<number>(0);
+  const [message, setMessage] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   // const [view, setView] = useState<View>('list');
@@ -99,6 +100,7 @@ export default function HomePage() {
       try {
         const data: StatusResponse = await fetchWithAuth('/api/status/today');
         setActionCount(data.action_count_today);
+        setMessage(data.message);
       } catch (err) {
         console.error(err);
       } finally {
@@ -120,6 +122,23 @@ export default function HomePage() {
         <h1 style={titleStyle}>そだちきゅ</h1>
 
         <Chikyumaru actionCount={actionCount} />
+
+        <div
+          style={{
+            marginTop: 16,
+            padding: '12px 16px',
+            background: '#ecfdf5',
+            borderRadius: '14px',
+            border: '1px solid #bbf7d0',
+            fontSize: 15,
+            fontWeight: 600,
+            color: '#065f46',
+            textAlign: 'center',
+            boxShadow: '0 4px 10px rgba(0,0,0,0.05)',
+          }}
+        >
+          {message}
+        </div>
 
         <div style={{ textAlign: 'center', marginBottom: 16 }}>
           <div style={{ fontSize: 14, color: '#0f766e' }}>
