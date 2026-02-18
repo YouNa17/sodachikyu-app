@@ -3,17 +3,15 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { auth } from '@/lib/firebase';
-import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  FirebaseError,
-} from 'firebase/auth';
-
-interface Star {
-  top: string;
-  left: string;
-  delay: string;
-}
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { fetchWithAuth } from '@/lib/api';
+import { FirebaseError } from 'firebase/app';
+// 星アニメーション（MVPでは不要なのでコメントアウト）
+// interface Star {
+//   top: string;
+//   left: string;
+//   delay: string;
+// }
 
 export default function LoginPage() {
   const router = useRouter();
@@ -22,13 +20,14 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const [stars] = useState<Star[]>(() =>
-    [...Array(12)].map(() => ({
-      top: `${Math.random() * 100}%`,
-      left: `${Math.random() * 100}%`,
-      delay: `${Math.random() * 3}s`,
-    })),
-  );
+  // 星アニメーション（MVPでは不要なのでコメントアウト）
+  // const [stars] = useState<Star[]>(() =>
+  //   [...Array(12)].map(() => ({
+  //     top: `${Math.random() * 100}%`,
+  //     left: `${Math.random() * 100}%`,
+  //     delay: `${Math.random() * 3}s`,
+  //   })),
+  // );
 
   const handleStart = async () => {
     if (!email || !password) {
@@ -36,11 +35,19 @@ export default function LoginPage() {
       return;
     }
     try {
+      let userCredential;
+
       if (isRegisterMode) {
-        await createUserWithEmailAndPassword(auth, email, password);
+        userCredential = await createUserWithEmailAndPassword(auth, email, password);
       } else {
-        await signInWithEmailAndPassword(auth, email, password);
+        userCredential = await signInWithEmailAndPassword(auth, email, password);
       }
+      // ★トークンを確実に取得
+      await userCredential.user.getIdToken(true);
+
+      // ★バックエンドにユーザー作成/取得させる
+      await fetchWithAuth('/api/users/me');
+
       setIsJumping(true);
       setTimeout(() => {
         router.push('/home');
@@ -67,7 +74,8 @@ export default function LoginPage() {
         padding: '20px',
       }}
     >
-      <div style={{ position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none' }}>
+      {/* 星アニメーション（MVPでは不要なのでコメントアウト）
+       <div style={{ position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none' }}>
         {stars.map((star, i) => (
           <div
             key={i}
@@ -83,7 +91,7 @@ export default function LoginPage() {
             ✨
           </div>
         ))}
-      </div>
+      </div> */}
 
       <div
         style={{
