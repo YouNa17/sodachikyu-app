@@ -6,9 +6,15 @@ type Props = {
   clearedCount: number;
 };
 
+function getLevel(count: number) {
+  if (count >= 5) return 3;
+  if (count >= 1) return 2;
+  return 1;
+}
+
 export default function EarthCharacter({ clearedCount }: Props) {
   // 表情レベルの判定ロジックはそのまま活用！
-  const level = clearedCount >= 5 ? 3 : clearedCount >= 1 ? 2 : 1;
+  const level = getLevel(clearedCount);
 
   // [変更] レベルに応じて画像ファイルを切り替えることも可能です
   // 例: level1 = 😐.png, level2 = 🙂.png, level3 = 😄.png

@@ -2,133 +2,96 @@
 
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { fetchWithAuth } from '@/lib/api';
 
-const ACTION_DATA: Record<
-  string,
-  { title: string; actions: { id: string; label: string; detail: string }[] }
-> = {
-  daily: {
-    title: '日常の選択',
-    actions: [
-      {
-        id: 'd1',
-        label: 'マイバッグを使う',
-        detail: 'プラスチックごみを減らし、石油資源の節約になります。',
-      },
-      {
-        id: 'd2',
-        label: 'マイボトルを使う',
-        detail: 'ペットボトルの廃棄を抑え、製造時のCO2排出を削減します。',
-      },
-      {
-        id: 'd3',
-        label: 'リユースを選ぶ',
-        detail: '中古品を選んだり譲ったりして、製品の寿命を延ばします。',
-      },
-      {
-        id: 'd4',
-        label: '使い捨てを断る',
-        detail: '不要な箸やスプーンをもらわず、ゴミを削減します。',
-      },
-      { id: 'd5', label: '歩き・自転車・公共交通', detail: '排気ガスによる環境負荷を減らします。' },
-    ],
-  },
-  food: {
-    title: '食べ物',
-    actions: [
-      {
-        id: 'f1',
-        label: '外食で残さず食べる',
-        detail: '食品ロスを減らし、廃棄時のエネルギーを抑えます。',
-      },
-      {
-        id: 'f2',
-        label: 'てまえどりをする',
-        detail: '棚の手前から取ることで食品ロス削減に貢献します。',
-      },
-      {
-        id: 'f3',
-        label: '規格外・見切り品を選ぶ',
-        detail: 'まだ食べられる食品が捨てられるのを防ぎます。',
-      },
-      {
-        id: 'f4',
-        label: '必要な分だけ買う',
-        detail: '予定外の買い物を控え、無駄な廃棄をなくします。',
-      },
-      { id: 'f5', label: '近くの産地のものを選ぶ', detail: '輸送にかかる燃料を削減できます。' },
-    ],
-  },
-  home: {
-    title: '家の中',
-    actions: [
-      {
-        id: 'h1',
-        label: '使ってない電気を消す',
-        detail: '無駄な電力消費を抑え、CO2排出を抑制します. ',
-      },
-      { id: 'h2', label: 'エアコン温度の調整', detail: '1度調整で消費電力を約10%削減できます。' },
-      { id: 'h3', label: 'コンセントを抜く', detail: '待機電力をカットして消費電力を削減します。' },
-      {
-        id: 'h4',
-        label: '残り湯を洗濯に使う',
-        detail: '1回あたり約45〜65リットルの節水になります。',
-      },
-      {
-        id: 'h5',
-        label: '冷蔵庫の中を整理する',
-        detail: '冷却効率がアップし、電気の無駄を省きます。',
-      },
-    ],
-  },
-  waste: {
-    title: 'ごみ',
-    actions: [
-      {
-        id: 'w1',
-        label: '資源ごみをリサイクル',
-        detail: '適切な回収場所へ持ち込み、資源を循環させます。',
-      },
-      { id: 'w2', label: 'ゴミを正しく分別する', detail: '再利用可能な資源を無駄にしません。' },
-      { id: 'w3', label: '生ゴミの水を切る', detail: '焼却時のエネルギー効率を高めます。' },
-    ],
-  },
+type Action = {
+  id: number;
+  title: string;
+  description: string;
+  done_today: boolean;
 };
-
-function getInitialActionCount(): number {
-  if (typeof window === 'undefined') return 0;
-  const saved = window.localStorage.getItem('actionCount');
-  const n = saved ? Number.parseInt(saved, 10) : 0;
-  return Number.isFinite(n) ? n : 0;
-}
 
 export default function ActionListPage() {
   const params = useParams();
   const router = useRouter();
   const categoryId = params.id as string;
-  const data = ACTION_DATA[categoryId] || ACTION_DATA.daily;
 
-  const [selectedAction, setSelectedAction] = useState<{ label: string; detail: string } | null>(
-    null,
-  );
+  const [actions, setActions] = useState<Action[]>([]);
+  const [selectedAction, setSelectedAction] = useState<Action | null>(null);
   const [isFinished, setIsFinished] = useState(false);
-
   // ✅ useEffectでsetStateしない（lintエラー回避）
-  const [currentCount, setCurrentCount] = useState<number>(() => getInitialActionCount());
+  const [currentCount, setCurrentCount] = useState(0);
+  const [categoryName, setCategoryName] = useState('');
+
+  // actions取得
+  useEffect(() => {
+    async function loadActions() {
+      try {
+        const data = await fetchWithAuth(`/api/categories/${categoryId}/actions`);
+
+        setActions(data.actions);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    if (categoryId) {
+      loadActions();
+    }
+  }, [categoryId]);
+
+  // カテゴリ名取得
+  useEffect(() => {
+    async function loadCategoryName() {
+      try {
+        const categories = await fetchWithAuth('/api/categories');
+
+        const category = categories.find(
+          (c: { id: number; name: string }) => c.id === Number(categoryId),
+        );
+
+        if (category) {
+          setCategoryName(category.name);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    if (categoryId) {
+      loadCategoryName();
+    }
+  }, [categoryId]);
+
+  // status取得
+  useEffect(() => {
+    async function loadStatus() {
+      const data = await fetchWithAuth('/api/status/today');
+
+      setCurrentCount(data.action_count_today);
+    }
+
+    loadStatus();
+  }, []);
 
   const isOhuro =
-    (selectedAction?.label ?? '').includes('湯') || (selectedAction?.label ?? '').includes('水');
+    (selectedAction?.title ?? '').includes('湯') || (selectedAction?.title ?? '').includes('水');
 
-  const handleDone = () => {
-    // ✅ 関数型更新にして、localStorage更新もここで完結
-    setCurrentCount((prev) => {
-      const next = prev + 1;
-      window.localStorage.setItem('actionCount', String(next));
-      window.localStorage.setItem('lastActionTitle', selectedAction?.label || '');
-      return next;
-    });
-    setIsFinished(true);
+  // action実行
+  const handleDone = async () => {
+    if (!selectedAction) return;
+
+    try {
+      const result = await fetchWithAuth(`/api/actions/${selectedAction.id}/action-logs`, {
+        method: 'POST',
+      });
+
+      setCurrentCount(result.action_count_today);
+      setIsFinished(true);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -154,10 +117,10 @@ export default function ActionListPage() {
         〈 カテゴリーへ戻る
       </button>
 
-      <h1 style={{ textAlign: 'center', color: '#2F855A' }}>{data.title}</h1>
+      <h1 style={{ textAlign: 'center', color: '#2F855A' }}>{categoryName}</h1>
 
       <div style={{ display: 'grid', gap: '15px', marginTop: '20px' }}>
-        {data.actions.map((a) => (
+        {actions.map((a) => (
           <button
             key={a.id}
             onClick={() => setSelectedAction(a)}
@@ -171,7 +134,7 @@ export default function ActionListPage() {
               cursor: 'pointer',
             }}
           >
-            {a.label}
+            {a.title}
           </button>
         ))}
       </div>
@@ -201,8 +164,8 @@ export default function ActionListPage() {
               maxWidth: '400px',
             }}
           >
-            <h2>{selectedAction.label}</h2>
-            <p style={{ margin: '20px 0', textAlign: 'left' }}>{selectedAction.detail}</p>
+            <h2>{selectedAction.title}</h2>
+            <p style={{ margin: '20px 0', textAlign: 'left' }}>{selectedAction.description}</p>
 
             <button
               onClick={handleDone}
