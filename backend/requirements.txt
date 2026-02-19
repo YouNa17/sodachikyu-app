@@ -9,4 +9,5 @@ firebase-admin
 ruff
 pytest
 httpx
+openai
 python-dotenv
