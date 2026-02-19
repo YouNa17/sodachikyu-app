@@ -1,0 +1,61 @@
+# -----------------
+# 地球AIメッセージ生成サービス
+# 初回ログイン専用
+# -----------------
+
+import os
+from openai import OpenAI
+
+client = OpenAI(
+    api_key=os.getenv("OPENAI_API_KEY")
+)
+
+
+def generate_earth_message_with_ai():
+    """
+    初回ログイン時の歓迎メッセージ生成
+    """
+
+    prompt = """
+
+あなたは「そだちきゅ」というアプリに登場する、地球のキャラクターです。
+
+ユーザーが日常の小さな環境に優しい行動（ミニアクション）を行うことで、
+あなたは少しずつ元気に育ちます。
+
+以下の条件で今日初めてアプリにログインしてくれたユーザーに感謝と歓迎の気持ちを伝えてください。：
+
+・地球のキャラクター本人として話してください
+・優しく、親しみやすい口調にしてください
+・ユーザーの行動によって「あなた自身（地球）が元気になる」ことを表現してください
+・環境や地球を第三者のように説明しないでください
+・毎回できるだけ異なる表現を使ってください
+・30文字程度にしてください
+・日本語で出力してください
+・メッセージのみを出力してください
+"""
+
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {
+                "role": "system",
+                "content": "あなたは優しい地球のキャラクターです。"
+            },
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
+        temperature=1.0,
+        max_tokens=40,
+    )
+
+    message = response.choices[0].message.content.strip()
+
+    print(f"[AI SUCCESS] Generated message: {message}")
+
+    # 初回ログイン時は必ずnormal
+    earth_state = "normal"
+
+    return earth_state, message

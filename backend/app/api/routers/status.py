@@ -22,4 +22,7 @@ def get_today_status(
     db: Session = Depends(get_db),
 ):
 
-    return build_today_status(db, current_user.id)
+    return build_today_status(
+    db,
+    current_user.id,
+)
