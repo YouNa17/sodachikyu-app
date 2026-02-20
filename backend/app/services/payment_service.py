@@ -3,7 +3,7 @@
 # -----------------
 
 import stripe                          # ← Stripe SDK（checkout がある）
-import app.core.stripe  # Stripe APIキー設定を読み込むため
+
 from sqlalchemy.orm import Session
 from app.models.payment import Payment
 
@@ -12,6 +12,7 @@ from app.models.payment import Payment
 # ===============================
 
 def create_checkout_session(amount: int):
+    print("STRIPE KEY:", stripe.api_key)
     session = stripe.checkout.Session.create(
         mode="payment",
         payment_method_types=["card"],
