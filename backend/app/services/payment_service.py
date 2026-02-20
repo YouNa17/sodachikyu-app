@@ -3,7 +3,7 @@
 # -----------------
 
 import stripe                          # ← Stripe SDK（checkout がある）
-from app.core import stripe as _config # ← APIキー設定を実行するため
+import app.core.stripe  # Stripe APIキー設定を読み込むため
 from sqlalchemy.orm import Session
 from app.models.payment import Payment
 

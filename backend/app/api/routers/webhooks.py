@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Request, Header, HTTPException
 import stripe
 import os
-import json
 from sqlalchemy.orm import Session
 from fastapi import Depends
 from app.db.session import get_db
