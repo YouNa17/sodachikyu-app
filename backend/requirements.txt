@@ -9,5 +9,6 @@ firebase-admin
 ruff
 pytest
 httpx
+openai
 python-dotenv
 stripe>=14.0.0
