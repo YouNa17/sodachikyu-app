@@ -6,13 +6,23 @@
 import os
 from openai import OpenAI
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
 def generate_earth_message_with_ai():
     """
     初回ログイン時の歓迎メッセージ生成
     """
+
+    # ★ここでAPIキー取得（import時ではなく実行時）
+    api_key = os.getenv("OPENAI_API_KEY")
+
+    # ★キーが無い場合は例外（status_service側でfallbackされる）
+    if not api_key:
+        raise RuntimeError("OPENAI_API_KEY is not set")
+
+    # ★ここでclient作成（重要）
+    client = OpenAI(api_key=api_key)
 
     prompt = """
 
