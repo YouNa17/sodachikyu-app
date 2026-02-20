@@ -19,9 +19,9 @@ router = APIRouter(prefix="/api/support", tags=["support"])
 class SupportRequest(BaseModel):
     amount: int
 
+
 # 支援（Stripe決済）を開始するAPI
 @router.post("/")
 def support(request: SupportRequest):
     url = create_checkout_session(request.amount)
     return {"checkout_url": url}
-

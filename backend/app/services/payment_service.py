@@ -2,7 +2,7 @@
 # 決済関連のロジック
 # -----------------
 
-import stripe                          # ← Stripe SDK（checkout がある）
+import stripe  # ← Stripe SDK（checkout がある）
 
 from sqlalchemy.orm import Session
 from app.models.payment import Payment
@@ -10,6 +10,7 @@ from app.models.payment import Payment
 # ===============================
 # ① 支援開始：Checkout Session作成
 # ===============================
+
 
 def create_checkout_session(amount: int):
     print("STRIPE KEY:", stripe.api_key)
@@ -34,6 +35,7 @@ def create_checkout_session(amount: int):
 
     # Stripeが作った決済ページのURLを返す
     return session.url
+
 
 # ===============================
 # ② 支援完了：Webhookから決済結果を保存

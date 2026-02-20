@@ -3,7 +3,15 @@ from app.db.session import engine
 from sqlalchemy import text
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-from app.api.routers import users, status, categories, actions, action_logs, support, webhooks
+from app.api.routers import (
+    users,
+    status,
+    categories,
+    actions,
+    action_logs,
+    support,
+    webhooks,
+)
 from app.core.stripe import init_stripe
 
 
@@ -16,7 +24,7 @@ async def lifespan(app: FastAPI):
     with engine.connect() as conn:
         conn.execute(text("SELECT 1"))
     print("DB connected!")
-    
+
     init_stripe()
     print("Stripe initialized!")
 

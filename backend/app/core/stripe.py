@@ -2,6 +2,7 @@
 import stripe
 import os
 
+
 # Stripe SDK にAPIキーを設定
 def init_stripe():
     stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
