@@ -92,6 +92,32 @@ export default function HomePage() {
         >
           ミニアクションをする
         </button>
+      </div>   
+
+        {/* 👇 白枠の外に出す */}
+    <button
+      onClick={() => router.push('/support')}
+      style={{
+        marginTop: 16,
+        width: '100%',
+        maxWidth: 420,
+        padding: '10px',
+        borderRadius: 999,
+        border: '1px solid #86efac',
+        backgroundColor: '#ffffff',
+        color: '#065f46',
+        fontWeight: 'bold',
+        cursor: 'pointer',
+      }}
+    >
+      そだちきゅを応援する 🌱
+    </button>
+  </main>
+);
+
+
+      
+      
 
         {/* {view === 'detail' && selectedAction ? (
           <div style={detailBoxStyle}>
@@ -140,14 +166,13 @@ export default function HomePage() {
             </div>
           </div>
         )} */}
-      </div>
-    </main>
-  );
+ 
 }
 
 const containerStyle: React.CSSProperties = {
   minHeight: '100vh',
   display: 'flex',
+  flexDirection: 'column', // ← ★これを追加
   justifyContent: 'center',
   alignItems: 'center',
   padding: 20,

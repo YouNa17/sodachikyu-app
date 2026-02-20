@@ -3,7 +3,7 @@ from app.db.session import engine
 from sqlalchemy import text
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-from app.api.routers import users, status, categories, actions, action_logs
+from app.api.routers import users, status, categories, actions, action_logs, support, webhooks
 
 
 # =========================
@@ -54,3 +54,5 @@ app.include_router(status.router)
 app.include_router(categories.router)
 app.include_router(actions.router)
 app.include_router(action_logs.router)
+app.include_router(support.router)
+app.include_router(webhooks.router)

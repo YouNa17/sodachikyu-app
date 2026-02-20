@@ -10,3 +10,4 @@ ruff
 pytest
 httpx
 python-dotenv
+stripe>=14.0.0
