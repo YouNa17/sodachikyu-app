@@ -92,8 +92,31 @@ export default function HomePage() {
         >
           ミニアクションをする
         </button>
+      </div>
 
-        {/* {view === 'detail' && selectedAction ? (
+      {/* 👇 支援ボタンの追加 白枠の外に出す */}
+      <button
+        onClick={() => router.push('/support')}
+        style={{
+          marginTop: 16,
+          width: '100%',
+          maxWidth: 420,
+          padding: '10px',
+          borderRadius: 999,
+          border: '1px solid #86efac',
+          backgroundColor: '#ffffff',
+          color: '#065f46',
+          fontWeight: 'bold',
+          cursor: 'pointer',
+        }}
+      >
+        そだちきゅを応援する 🌱
+      </button>
+    </main>
+  );
+
+  {
+    /* {view === 'detail' && selectedAction ? (
           <div style={detailBoxStyle}>
             <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 8 }}>
               {selectedAction.title}
@@ -108,9 +131,13 @@ export default function HomePage() {
               </button>
               <button style={primaryBtn} onClick={handleDone}>
                 できた！
-              </button> */}
-        {/* </div> */}
-        {/* </div>
+              </button> */
+  }
+  {
+    /* </div> */
+  }
+  {
+    /* </div>
         ) : (
           <div>
             <div style={{ fontWeight: 700, marginBottom: 10, color: '#0f766e' }}>
@@ -132,22 +159,25 @@ export default function HomePage() {
               <button style={ghostBtn} onClick={handleReset}>
                 リセット（動作確認用）
               </button>
-            </div> */}
+            </div> */
+  }
 
-        {/* 例：別サイズでも使える */}
-        {/* <div style={{ marginTop: 18, opacity: 0.9 }}>
+  {
+    /* 例：別サイズでも使える */
+  }
+  {
+    /* <div style={{ marginTop: 18, opacity: 0.9 }}>
               <Chikyumaru size={90} actionCount={actionCount} />
             </div>
           </div>
-        )} */}
-      </div>
-    </main>
-  );
+        )} */
+  }
 }
 
 const containerStyle: React.CSSProperties = {
   minHeight: '100vh',
   display: 'flex',
+  flexDirection: 'column', // ← ★支援ボタンを白枠外におきたいため、追加
   justifyContent: 'center',
   alignItems: 'center',
   padding: 20,
