@@ -1,3 +1,7 @@
+# -----------------
+# 決済関連のロジック
+# -----------------
+
 import stripe                          # ← Stripe SDK（checkout がある）
 from app.core import stripe as _config # ← APIキー設定を実行するため
 from sqlalchemy.orm import Session

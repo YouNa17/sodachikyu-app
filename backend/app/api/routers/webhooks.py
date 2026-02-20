@@ -15,32 +15,28 @@ router = APIRouter(
 # Stripe Webhook 用の署名シークレット
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
 
-
+# Stripe からの Webhook を受信するための POST エンドポイント
 @router.post("/stripe")
 async def stripe_webhook(
+    # # Stripe から送信されるリクエスト全体を受け取る
     request: Request,
     stripe_signature: str = Header(None, alias="Stripe-Signature"),
     db: Session = Depends(get_db),
 ):
-    """
-    Stripe Webhook 受信エンドポイント
 
-    - Stripe からのイベントを受信する
-    - 署名を検証して正当なリクエストか確認する
-    - event.type に応じて処理を分岐する
-    """
-
+    # Stripeから送られてくる raw payloadを取得
     payload = await request.body()
 
-    # -------------------------
-    # 署名検証（MVPでは必須）
-    # -------------------------
+    # ------------------------------------------------------
+    # 署名検証（Stripeが送信した正規の webhook であることを検証
+    # ------------------------------------------------------
     try:
         event = stripe.Webhook.construct_event(
             payload=payload,
             sig_header=stripe_signature,
             secret=STRIPE_WEBHOOK_SECRET,
         )
+    # 署名が不正なら 400 を返す    
     except stripe.error.SignatureVerificationError:
         raise HTTPException(status_code=400, detail="Invalid Stripe signature")
     except Exception:
@@ -51,7 +47,8 @@ async def stripe_webhook(
     # -------------------------
     if event["type"] == "checkout.session.completed":
         session = event["data"]["object"]
-
+        
+        # 決済結果をDBに保存
         save_payment_from_checkout_session(db, session)
 
         print("Checkout completed & saved:", session["id"])

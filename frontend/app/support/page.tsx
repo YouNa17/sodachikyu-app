@@ -1,3 +1,5 @@
+/* 支援金額選択・Stripe Checkout開始ページ */
+
 'use client';
 
 import { useState } from 'react';
@@ -16,12 +18,13 @@ export default function SupportPage() {
     setError('');
 
     try {
+      // 認証付きでバックエンドに支援金額を送信
       const res = await fetchWithAuth('/api/support', {
         method: 'POST',
         body: JSON.stringify({ amount }),
       });
 
-      // checkout_url にリダイレクト
+      // バックエンドから返却されたStripeのCheakout URLに遷移
       window.location.href = res.checkout_url;
     } catch (e) {
       console.error(e);
@@ -36,13 +39,13 @@ export default function SupportPage() {
         <h1 style={title}>そだちきゅ応援 🌱</h1>
 
         <EarthCharacter earthState="smile" />
-        
+
         {/* 説明文 */}
         <p style={text}>
-          いただいた支援は、アプリ運営や機能改善、  
+          いただいた支援は、アプリ運営や機能改善、
           そだちきゅをもっと使いやすくするための開発に使われます。
         </p>
-        
+
         {/* 金額選択 */}
         <div style={amountBox}>
           {[100, 300, 500].map((v) => (
@@ -59,7 +62,7 @@ export default function SupportPage() {
             </button>
           ))}
         </div>
-        
+
         {/* 支援する */}
         <button onClick={onSupport} disabled={loading} style={supportBtn}>
           {loading ? '処理中...' : 'この金額で支援する'}

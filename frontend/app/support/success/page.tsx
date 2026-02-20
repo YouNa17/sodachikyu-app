@@ -1,9 +1,13 @@
+/* 支援完了後のページ */
+
 'use client';
 
 import { useRouter } from 'next/navigation';
 import EarthCharacter from '@/components/EarthCharacter';
 
+// Stripe 決済完了後に遷移してくる、支援完了画面
 export default function SupportSuccessPage() {
+  // ボタン操作による画面遷移（Homeへ）に使用するルーター
   const router = useRouter();
 
   return (
