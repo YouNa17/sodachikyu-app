@@ -70,4 +70,4 @@ def _build_earth_state(count: int):
     elif count < 5:
         return "smile", "いい調子！小さな一歩が未来を変えるよ"
     else:
-        return "happy", "素晴らしい！地球も喜んでるよ"
+        return "happy", "ありがとう！きみのおかげで元気いっぱいだよ！"
