@@ -29,18 +29,16 @@ def get_or_create_user(db, decoded_token: dict):
         db.refresh(user)
 
         is_first_login_today = True
-    
-    else:
 
+    else:
         # updated_at が今日でなければ初回ログイン
         last_login_date = user.updated_at.date()
         # 更新前の値で判定
         is_first_login_today = last_login_date != today
-    
 
     # userオブジェクトにフラグを追加
     user.is_first_login_today = is_first_login_today
-    
+
     # ↓AIの挙動確認用のログ、本番では消す
     # print(
     # f"[AUTH DEBUG] uid={firebase_uid}, "
@@ -48,5 +46,5 @@ def get_or_create_user(db, decoded_token: dict):
     # f"updated_at={user.updated_at}, "
     # f"is_first_login_today={is_first_login_today}"
     # )
-        # ユーザーオブジェクトを返す
+    # ユーザーオブジェクトを返す
     return user

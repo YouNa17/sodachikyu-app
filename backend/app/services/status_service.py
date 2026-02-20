@@ -12,6 +12,7 @@ from app.services.earth_ai_service import generate_earth_message_with_ai
 JST = ZoneInfo("Asia/Tokyo")
 UTC = ZoneInfo("UTC")
 
+
 def build_today_status(db: Session, user_id):
     # JSTの日付取得
     today = get_jst_today()
@@ -33,7 +34,6 @@ def build_today_status(db: Session, user_id):
 
     # ★初回ログインなら更新
     if is_first_login_today:
-
         user.updated_at = datetime.utcnow()
         db.commit()
 
@@ -49,9 +49,9 @@ def build_today_status(db: Session, user_id):
         try:
             earth_state, message = generate_earth_message_with_ai()
         except Exception as e:
-              print("AI generation failed:", e)
-              # AI失敗時は従来ロジックにフォールバック
-              earth_state, message = _build_earth_state(count)
+            print("AI generation failed:", e)
+            # AI失敗時は従来ロジックにフォールバック
+            earth_state, message = _build_earth_state(count)
     else:
         earth_state, message = _build_earth_state(count)
 

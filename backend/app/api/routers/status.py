@@ -23,6 +23,6 @@ def get_today_status(
 ):
 
     return build_today_status(
-    db,
-    current_user.id,
-)
+        db,
+        current_user.id,
+    )
