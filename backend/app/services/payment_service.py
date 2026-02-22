@@ -44,10 +44,20 @@ def save_payment_from_checkout_session(
     db: Session,
     session: stripe.checkout.Session,
 ):
+    # -----------------------------
+    # 二重保存防止（Webhook再送対策）
+    # -----------------------------
+    existing = db.query(Payment).filter(Payment.stripe_payment_id == session.id).first()
 
+    if existing:
+        return
+
+    # -----------------------------
+    # 新規保存
+    # -----------------------------
     payment = Payment(
         user_id=None,  # 将来ユーザー紐付けする場合に対応
-        stripe_payment_id=session.payment_intent,
+        stripe_payment_id=session.id,
         amount=session.amount_total,
         currency=session.currency,
         status=session.payment_status,
