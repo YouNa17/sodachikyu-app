@@ -109,11 +109,10 @@ export default function ActionListPage() {
   };
 
   // ✅ 達成後：カテゴリ別設定（なければデフォルト）
-  const finishCfg =
-    finishByCategory[categoryIdNum] ?? {
-      message: 'ナイスアクション！🌱',
-      bg: 'white',
-    };
+  const finishCfg = finishByCategory[categoryIdNum] ?? {
+    message: 'ナイスアクション！🌱',
+    bg: 'white',
+  };
 
   // ✅ モーダルを関数に分離（見た目はそのまま）
   const renderActionModal = () => {
@@ -358,7 +357,13 @@ export default function ActionListPage() {
             backgroundColor: 'white',
           }}
         >
-          <Image src="/smile.jpg" alt="ちきゅまる" fill sizes="90px" style={{ objectFit: 'cover' }} />
+          <Image
+            src="/smile.jpg"
+            alt="ちきゅまる"
+            fill
+            sizes="90px"
+            style={{ objectFit: 'cover' }}
+          />
         </div>
       </div>
 
