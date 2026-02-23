@@ -1,167 +1,172 @@
 # TeamC_sodachikyu
 
 # プロジェクト名
+
 - そだちきゅ
 
-##  概要
+## 概要
 
 - 本プロジェクトは、環境問題に関心はあるものの、「何をすればよいか分からない」「行動が続かない」と
-感じているユーザーに対し、日常の中で実行できる小さな環境行動（ミニアクション）を提示し、行動できたこと
-自体を肯定する体験を提供する
+  感じているユーザーに対し、日常の中で実行できる小さな環境行動（ミニアクション）を提示し、行動できたこと
+  自体を肯定する体験を提供する
 - 本プロジェクトは、数値評価や他者との比較ではなく、地球キャラクターの成長を通して、行動の積み重ねを
-直感的に感じられる設計
+  直感的に感じられる設計
 
-##  目的
+## 目的
 
 - 環境問題への関心は社会全体で高まっている一方で、「関心はあるが、具体的な行動に移せていない人」は
-依然として多い。その背景には、環境のための行動が “正しさ” や “成果” を前提に語られやすい構造 がある
+  依然として多い。その背景には、環境のための行動が “正しさ” や “成果” を前提に語られやすい構造 がある
 - CO₂削減量などの数値で効果を示される、他者との比較や判断で評価される「より良い選択」
-「正解の行動」を求められるこうした設計は、行動できている一部の人には有効だが、行動に踏み
-出せていない人にとっては 心理的ハードルをさらに高める要因 になっている。
+  「正解の行動」を求められるこうした設計は、行動できている一部の人には有効だが、行動に踏み
+  出せていない人にとっては 心理的ハードルをさらに高める要因 になっている。
 - 結果として、行動そのものを始められない、または継続できない状態 が生まれる。
 - こういった上記背景から、下記を目的とした開発を行った。
-　- ユーザに行動を強制・指導するのではなく、判断・比較・評価を排除した環境の中で、気づけば行動している状態を生み出す。
+  　- ユーザに行動を強制・指導するのではなく、判断・比較・評価を排除した環境の中で、気づけば行動している状態を生み出す。
   - 環境行動を「頑張ること」「正解を選ぶこと」ではなく、生活の中に静かに組み込める行為として再定義する。
   - 無理な継続を求めずとも、結果として行動が続いていく状態を実現する。
 
-##  想定ユーザー
+## 想定ユーザー
 
 - 環境問題に関心はあるが、積極的な活動はしていない人
 - 評価・他者との比較・成果指標に疲れている層
 
 ---
 
-##  技術スタック
+## 技術スタック
 
 ### Frontend
+
 - Next.js + TypeScript
 - Tailwind CSS
 
 ### Backend
+
 - FastAPI
 - Pydantic
 
 ### Database
+
 - PostgreSQL
 
 ### Infrastructure
+
 - Docker
 
 ---
 
-##  ディレクトリ構成
+## ディレクトリ構成
+
 sodachikyu/
 ├── backend/
-│   ├── app/
-│   │   ├── main.py
-│   │   ├── api/
-│   │   │   ├── deps.py
-│   │   │   ├── routers/
-│   │   │   │   ├── auth.py　　　　
-│   │   │   ├── users.py            # GET /api/users/me
-│   │   │   ├── categories.py
-│   │   │   ├── actions.py           # カテゴリ配下の actions 取得
-│   │   │   ├── action_logs.py       # ★ POST /api/users/me/action-logs
-│   │   │   └── status.py            # GET /api/status/today
-│   │   ├── core/
-│   │   │   ├── config.py
-│   │   │   └── security.py
-│   │   ├── models/
-│   │   │   ├── user.py
-│   │   │   ├── category.py
-│   │   │   ├── action.py
-│   │   │   └── action_log.py        
-│   │   ├── schemas/
-│   │   │   ├── user.py
-│   │   │   ├── category.py
-│   │   │   ├── action.py
-│   │   │   ├── action_log.py
-│   │   │   └── status.py
-│   │   ├── services/
-│   │   │   ├── auth_service.py
-│   │   │   ├── action_service.py
-│   │   │   ├── action_log_service.py  
-│   │   │   └── status_service.py
-│   │   ├── db/
-│   │   │   ├── base.py
-│   │   │   ├── session.py
-│   │   │   └── init_db.py
-│   │   └── utils/
-│   │       └── date.py              # JSTの「今日」判定
-│   ├── alembic/
-│   │   ├── versions/
-│   │   └── env.py
-│   ├── alembic.ini
-│   ├── Dockerfile
-│   ├── requirements.txt
-│   └── pytest.ini
-│ 
+│ ├── app/
+│ │ ├── main.py
+│ │ ├── api/
+│ │ │ ├── deps.py
+│ │ │ ├── routers/
+│ │ │ │ ├── auth.py　　　　
+│ │ │ ├── users.py # GET /api/users/me
+│ │ │ ├── categories.py
+│ │ │ ├── actions.py # カテゴリ配下の actions 取得
+│ │ │ ├── action_logs.py # ★ POST /api/users/me/action-logs
+│ │ │ └── status.py # GET /api/status/today
+│ │ ├── core/
+│ │ │ ├── config.py
+│ │ │ └── security.py
+│ │ ├── models/
+│ │ │ ├── user.py
+│ │ │ ├── category.py
+│ │ │ ├── action.py
+│ │ │ └── action_log.py  
+│ │ ├── schemas/
+│ │ │ ├── user.py
+│ │ │ ├── category.py
+│ │ │ ├── action.py
+│ │ │ ├── action_log.py
+│ │ │ └── status.py
+│ │ ├── services/
+│ │ │ ├── auth_service.py
+│ │ │ ├── action_service.py
+│ │ │ ├── action_log_service.py  
+│ │ │ └── status_service.py
+│ │ ├── db/
+│ │ │ ├── base.py
+│ │ │ ├── session.py
+│ │ │ └── init_db.py
+│ │ └── utils/
+│ │ └── date.py # JSTの「今日」判定
+│ ├── alembic/
+│ │ ├── versions/
+│ │ └── env.py
+│ ├── alembic.ini
+│ ├── Dockerfile
+│ ├── requirements.txt
+│ └── pytest.ini
+│
 ├── frontend/
-│   ├── app/
-│   │   ├── layout.tsx
-│   │   ├── page.tsx　　　トップページ
-│   │   ├── login/
-│   │   │   └── page.tsx　　　ログインページ
-│   │   ├── categories/
-│   │   │   ├── page.tsx　　　カテゴリ一覧
-│   │   │   └── [id]/
-│   │   │       └── page.tsx　　　ミニアクション一覧
-│   │   └── components/
-│   │       ├── EarthCharacter.tsx　　　地球の状態表示
-│   │       ├── ActionButton.tsx　　　アクション実行
-│   │       └── CategoryButton.tsx　　　カテゴリボタン
-│   ├── lib/
-│   │   ├── api.ts　　　FastAPI通信
-│   │   ├── firebase.ts　　　Firebase初期化
-│   │   └── auth.ts　　　ログイン処理
-│   ├── styles/
-│   │   └── globals.css
-│   ├── tailwind.config.js
-│   ├── postcss.config.js
-│   ├── next.config.js
-│   └── package.json
+│ ├── app/
+│ │ ├── layout.tsx
+│ │ ├── page.tsx　　　トップページ
+│ │ ├── login/
+│ │ │ └── page.tsx　　　ログインページ
+│ │ ├── categories/
+│ │ │ ├── page.tsx　　　カテゴリ一覧
+│ │ │ └── [id]/
+│ │ │ └── page.tsx　　　ミニアクション一覧
+│ │ └── components/
+│ │ ├── EarthCharacter.tsx　　　地球の状態表示
+│ │ ├── ActionButton.tsx　　　アクション実行
+│ │ └── CategoryButton.tsx　　　カテゴリボタン
+│ ├── lib/
+│ │ ├── api.ts　　　FastAPI通信
+│ │ ├── firebase.ts　　　Firebase初期化
+│ │ └── auth.ts　　　ログイン処理
+│ ├── styles/
+│ │ └── globals.css
+│ ├── tailwind.config.js
+│ ├── postcss.config.js
+│ ├── next.config.js
+│ └── package.json
 │
 ├── docs/　　　　　
-│   ├── api/
-│   │   └── openapi.yaml              # OpenAPI（Swagger）仕様書
-│   └── db/
-│       └── er_diagram.drawio         # ER図（DB設計）
+│ ├── api/
+│ │ └── openapi.yaml # OpenAPI（Swagger）仕様書
+│ └── db/
+│ └── er_diagram.drawio # ER図（DB設計）
 │
 ├── .github/
-│   └── workflows/
-│       └── ci.yml                    # GitHub Actions（CI）
+│ └── workflows/
+│ └── ci.yml # GitHub Actions（CI）
 │
 ├── .vscode/
-│   └── settings.json                 # VSCode 設定（任意）
+│ └── settings.json # VSCode 設定（任意）
 │
 ├── docker-compose.yml
-├── .env.example                      
+├── .env.example  
 ├── .gitignore
 └── README.md
 
 ---
 
-##  環境構築
+## 環境構築
 
 - 本プロジェクトでは、バックエンドおよびデータベースをDockerで起動する
-
 
 ### 前提条件
 
 - Git
 - Docker
-- Python 
+- Python
 
 ---
 
-##  起動確認
+## 起動確認
 
 - Frontend: http://localhost:3000
 - Backend: http://localhost:8000
 
 ---
 
-##  機能一覧（MVP）
+## 機能一覧（MVP）
 
 - Firebase Authentication によるログイン機能
 - ログインユーザー情報取得機能
@@ -217,15 +222,15 @@ MVP以降の拡張フェーズで対応予定としている。
 
 ---
 
-##  API仕様
+## API仕様
 
-| Method | Path | 概要 |
-|--------|------|------|
-| GET | /api/users/me | ログインユーザー取得 |
-| GET | /api/status/today | 今日の状態取得 |
-| GET | /api/categories | カテゴリ一覧取得 |
-| GET | /api/categories/{category_id}/actions | アクション一覧取得 |
-| POST | /api/users/me/action-logs | アクション記録 |
+| Method | Path                                  | 概要                 |
+| ------ | ------------------------------------- | -------------------- |
+| GET    | /api/users/me                         | ログインユーザー取得 |
+| GET    | /api/status/today                     | 今日の状態取得       |
+| GET    | /api/categories                       | カテゴリ一覧取得     |
+| GET    | /api/categories/{category_id}/actions | アクション一覧取得   |
+| POST   | /api/users/me/action-logs             | アクション記録       |
 
 ※ APIの詳細仕様については Swagger にて管理している。
 

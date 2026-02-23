@@ -14,7 +14,7 @@ info:
     当日の状態取得を行う。
 
 servers:
-  - url: http://localhost:8000  
+  - url: http://localhost:8000
 
 # 共通定義の置き場
 components:
@@ -61,7 +61,7 @@ components:
         - happy
       description: >
         当日の行動数から算出される地球キャラクターの状態
-    
+
     StatusToday:
       type: object
       properties:
@@ -99,8 +99,7 @@ security:
 paths:
   /api/users/me:
     get:
-      summary:
-        認証済みユーザー情報の取得
+      summary: 認証済みユーザー情報の取得
       description: |
         Firebase UID を元にユーザー情報を取得。
         未登録の場合は初回アクセス時にサーバー側で初期データを作成し、情報を返す。
@@ -110,12 +109,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"    # 共通化するところ　$refで参照可能
+                $ref: "#/components/schemas/User" # 共通化するところ　$refで参照可能
 
   /api/status/today:
     get:
-      summary: 
-        今日の状態の取得
+      summary: 今日の状態の取得
       description: |
         当日の行動数・地球の状態・表示メッセージを返す。
         今日の状態は action_logs から算出される。
@@ -187,17 +185,17 @@ paths:
                 action_id:
                   type: integer
 　　　responses:
-       "201":
-         description: Action logged
-         content:
-           application/json:
-             schema: 
-               $ref: "#/components/schemas/ActionLogResponse"
-       "401":
-         description: Unauthorized
-       "404":
-         description: Action not found
-       "409":
-         description: Already executed today
-       "500":
-         description: Internal server error
+  "201":
+    description: Action logged
+    content:
+      application/json:
+        schema:
+          $ref: "#/components/schemas/ActionLogResponse"
+  "401":
+    description: Unauthorized
+  "404":
+    description: Action not found
+  "409":
+    description: Already executed today
+  "500":
+    description: Internal server error
