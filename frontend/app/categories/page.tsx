@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { fetchWithAuth } from '@/lib/api';
@@ -43,8 +42,6 @@ export default function CategoryPage() {
         textAlign: 'center',
         backgroundColor: '#e0f7fa',
         minHeight: '100vh',
-        position: 'relative',
-        overflow: 'hidden',
       }}
     >
       {/* 🏠 ホームへ戻るボタン */}
@@ -72,100 +69,6 @@ export default function CategoryPage() {
         今からどこから地球を救う？ 🌱
       </p>
 
-      {/* 🌏 1つ目のちきゅまる（左下） */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: '80px',
-          left: '12%',
-          width: '150px',
-          height: '150px',
-          zIndex: 10,
-          animation: 'float1 3s ease-in-out infinite',
-        }}
-      >
-        {/* 💬 吹き出し */}
-        <div
-          style={{
-            position: 'absolute',
-            top: '-70px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            backgroundColor: 'white',
-            padding: '10px 20px',
-            borderRadius: '25px',
-            fontSize: '16px',
-            fontWeight: 'bold',
-            color: '#00796b',
-            whiteSpace: 'nowrap',
-            boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
-            border: '3px solid #48BB78',
-          }}
-        >
-          どれに挑戦する〜？
-          <div
-            style={{
-              position: 'absolute',
-              bottom: '-12px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              borderTop: '12px solid #48BB78',
-              borderLeft: '12px solid transparent',
-              borderRight: '12px solid transparent',
-            }}
-          ></div>
-        </div>
-
-        {/* 本体画像 */}
-        <div
-          style={{
-            width: '100%',
-            height: '100%',
-            borderRadius: '50%',
-            overflow: 'hidden',
-            border: '6px solid white',
-            boxShadow: '0 10px 30px rgba(0,0,0,0.15)',
-            position: 'relative',
-          }}
-        >
-          <Image
-            src="/smile.jpg"
-            alt="ちきゅまる"
-            fill
-            sizes="150px"
-            style={{ objectFit: 'cover' }}
-            priority
-          />
-        </div>
-      </div>
-
-      {/* 🌏 2つ目のちきゅまる（右上） */}
-      <div
-        style={{
-          position: 'absolute',
-          top: '120px',
-          right: '10%',
-          width: '170px',
-          height: '170px',
-          borderRadius: '50%',
-          overflow: 'hidden',
-          boxShadow: '0 10px 30px rgba(0,0,0,0.15)',
-          border: '6px solid white',
-          zIndex: 5,
-          animation: 'float2 4s ease-in-out infinite 1s',
-        }}
-      >
-        <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-          <Image
-            src="/smile.jpg"
-            alt="ちきゅまる"
-            fill
-            sizes="170px"
-            style={{ objectFit: 'cover' }}
-          />
-        </div>
-      </div>
-
       {/* カテゴリーボタン一覧 */}
       <div
         style={{
@@ -174,12 +77,11 @@ export default function CategoryPage() {
           gap: '25px',
           maxWidth: '420px',
           margin: '40px auto',
-          position: 'relative',
-          zIndex: 15,
         }}
       >
         {categories.map((cat) => {
-          const meta = categoryMeta[cat.id] || { icon: '🌱', color: '#ddd' };
+          const meta = categoryMeta[cat.id] ?? { icon: '🌱', color: '#ddd' };
+
           return (
             <button
               key={cat.id}
@@ -198,7 +100,13 @@ export default function CategoryPage() {
               }}
             >
               <span style={{ fontSize: '50px', marginBottom: '10px' }}>{meta.icon}</span>
-              <span style={{ fontWeight: 'bold', color: '#333', fontSize: '16px' }}>
+              <span
+                style={{
+                  fontWeight: 'bold',
+                  color: '#333',
+                  fontSize: '16px',
+                }}
+              >
                 {cat.name}
               </span>
               <div
@@ -209,27 +117,11 @@ export default function CategoryPage() {
                   marginTop: '10px',
                   borderRadius: '3px',
                 }}
-              ></div>
+              />
             </button>
           );
         })}
       </div>
-
-      {/* アニメーションCSS設定 */}
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-        @keyframes float1 {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-20px) rotate(5deg); }
-        }
-        @keyframes float2 {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-25px) rotate(-5deg); }
-        }
-      `,
-        }}
-      />
     </main>
   );
 }
