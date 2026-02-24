@@ -117,7 +117,7 @@ export default function LoginPage() {
               style={{
                 ...inputStyle,
                 color: '#00bcd4',
-                borderColor: '#4dd0e1'
+                borderColor: '#4dd0e1',
               }}
             />
             {/* ★パスワード入力を水色に */}
@@ -129,7 +129,7 @@ export default function LoginPage() {
               style={{
                 ...inputStyle,
                 color: '#00bcd4',
-                borderColor: '#4dd0e1'
+                borderColor: '#4dd0e1',
               }}
             />
 

@@ -75,7 +75,10 @@ export default function CategoryPage() {
 
               <span className="text-base font-bold text-slate-800">{cat.name}</span>
 
-              <span className="mt-3 h-[5px] w-10 rounded-[3px]" style={{ backgroundColor: meta.color }} />
+              <span
+                className="mt-3 h-[5px] w-10 rounded-[3px]"
+                style={{ backgroundColor: meta.color }}
+              />
             </button>
           );
         })}
