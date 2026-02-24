@@ -6,12 +6,6 @@ import { auth } from '@/lib/firebase';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { fetchWithAuth } from '@/lib/api';
 import { FirebaseError } from 'firebase/app';
-// 星アニメーション（MVPでは不要なのでコメントアウト）
-// interface Star {
-//   top: string;
-//   left: string;
-//   delay: string;
-// }
 
 export default function LoginPage() {
   const router = useRouter();
@@ -19,15 +13,6 @@ export default function LoginPage() {
   const [isJumping, setIsJumping] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  // 星アニメーション（MVPでは不要なのでコメントアウト）
-  // const [stars] = useState<Star[]>(() =>
-  //   [...Array(12)].map(() => ({
-  //     top: `${Math.random() * 100}%`,
-  //     left: `${Math.random() * 100}%`,
-  //     delay: `${Math.random() * 3}s`,
-  //   })),
-  // );
 
   const handleStart = async () => {
     if (!email || !password) {
@@ -42,10 +27,7 @@ export default function LoginPage() {
       } else {
         userCredential = await signInWithEmailAndPassword(auth, email, password);
       }
-      // ★トークンを確実に取得
       await userCredential.user.getIdToken(true);
-
-      // ★バックエンドにユーザー作成/取得させる
       await fetchWithAuth('/api/users/me');
 
       setIsJumping(true);
@@ -74,25 +56,6 @@ export default function LoginPage() {
         padding: '20px',
       }}
     >
-      {/* 星アニメーション（MVPでは不要なのでコメントアウト）
-       <div style={{ position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none' }}>
-        {stars.map((star, i) => (
-          <div
-            key={i}
-            className="star"
-            style={{
-              position: 'absolute',
-              top: star.top,
-              left: star.left,
-              animationDelay: star.delay,
-              fontSize: '24px',
-            }}
-          >
-            ✨
-          </div>
-        ))}
-      </div> */}
-
       <div
         style={{
           display: 'flex',
@@ -145,27 +108,38 @@ export default function LoginPage() {
           </p>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {/* ★メールアドレス入力を水色に */}
             <input
               type="email"
               placeholder="メールアドレス"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              style={inputStyle}
+              style={{
+                ...inputStyle,
+                color: '#00bcd4',
+                borderColor: '#4dd0e1'
+              }}
             />
+            {/* ★パスワード入力を水色に */}
             <input
               type="password"
               placeholder="パスワード"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              style={inputStyle}
+              style={{
+                ...inputStyle,
+                color: '#00bcd4',
+                borderColor: '#4dd0e1'
+              }}
             />
 
+            {/* ★ボタンを水色に */}
             <button
               onClick={handleStart}
               disabled={isJumping}
               style={{
                 padding: '16px',
-                backgroundColor: isJumping ? '#ccc' : '#48BB78',
+                backgroundColor: isJumping ? '#ccc' : '#4dd0e1',
                 color: 'white',
                 borderRadius: '30px',
                 border: 'none',
@@ -173,6 +147,7 @@ export default function LoginPage() {
                 fontWeight: 'bold',
                 cursor: 'pointer',
                 marginTop: '10px',
+                boxShadow: '0 4px 14px rgba(77, 208, 225, 0.4)',
               }}
             >
               {isJumping ? '出発！' : isRegisterMode ? '登録してはじめる' : 'ログインしてはじめる'}
