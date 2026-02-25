@@ -22,7 +22,7 @@ def create_checkout_session(amount: int):
                 "price_data": {
                     "currency": "jpy",
                     "product_data": {
-                        "name": "ちきゅまる応援支援 🌱",
+                        "name": "そだちきゅ応援支援 🌱",
                     },
                     "unit_amount": amount,
                 },
